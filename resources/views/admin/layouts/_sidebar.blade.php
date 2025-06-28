@@ -22,6 +22,13 @@
                 <span>Users</span>
             </a>
         </li>
+       
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('categories.index') ? '' : 'collapsed' }}" href="{{ route('categories.index') }}">
+                <i class="bi bi-list"></i>
+                <span>Categories</span>
+            </a>
+        </li>
         
         <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('products.*') ? '' : 'collapsed' }}" href="{{ route('products.index') }}">

@@ -1,11 +1,11 @@
 @extends('admin.layouts.app')
 @section('content')
     <div class="pagetitle">
-        <h1>Categories</h1>
+        <h1>Brands</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active">Categories</li>
+                <li class="breadcrumb-item active">Brands</li>
             </ol>
         </nav> 
     </div>
@@ -19,7 +19,7 @@
 
     <section class="section">
         <div class="alert alert-success alert-dismissible fade show" role="alert" id="alertMsg" style="display: none">
-            Category deleted successfully.
+            Brand deleted successfully.
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
 
@@ -28,15 +28,16 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="card-title">Category List</h5>
+                            <h5 class="card-title">Brand List</h5>
                             <div>
-                                <a href="{{ route('categories.create') }}" class="btn btn-primary">Add Category</a>
+                                <a href="{{ route('brands.create') }}" class="btn btn-primary">Add Brand</a>
                             </div>
                         </div>
                         <table class="table datatable text-capitalize ">
                             <thead>
                                 <tr>
                                     <th>ID</th>
+                                    <th>Logo</th>
                                     <th>Name</th>
                                     <th data-type="date" data-format="YYYY/DD/MM">Create Date</th>
                                     <th>Action</th>
@@ -44,18 +45,19 @@
                             </thead>
                             <tbody>
                                 @php $i = 1; @endphp
-                                @foreach ($categories as $value)
+                                @foreach ($brands as $value)
                                     <tr>
                                         <td>{{ $i++ }}</td>
+                                        <td>{{ $value->logo }}</td>
                                         <td>{{ $value->name }}</td>
                                         <td>{{ $value->created_at->format('d M Y') }}</td>
                                         <td>
-                                            <a href="{{ route('categories.edit', $value->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                            <a href="{{ route('brands.edit', $value->id) }}" class="btn btn-sm btn-warning">Edit</a>
                                             <button class="btn btn-danger btn-sm deleteData" data-id="{{ $value->id }}"
                                                 data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
                                                 Delete
                                             </button>
-                                            {{-- <form action="{{ route('categories.destroy', $value->id) }}" method="POST"
+                                            {{-- <form action="{{ route('brands.destroy', $value->id) }}" method="POST"
                                                 style="display: inline-block;">
                                                 @csrf
                                                 @method('DELETE')
@@ -127,7 +129,7 @@
             var id = $(this).data('id');
             $.ajax({
                 type: "POST",
-                url: "{{ route('categories.delete', ':id') }}".replace(':id', id),
+                url: "{{ route('brands.delete', ':id') }}".replace(':id', id),
                 success: function(data) {
                     $('#confirmDeleteModal').modal('hide');
                     $('#alertMsg').show().delay(3000)

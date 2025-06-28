@@ -13,6 +13,8 @@ use App\Http\Controllers\Admin\TwoFactorAuthController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ProductController as admin_product;
 use App\Http\Controllers\Admin\CommonSettingController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\BrandController;
 
 use App\Http\Controllers\ImageController;
 // use Intervention\Image\Facades\Image;
@@ -114,10 +116,16 @@ Route::prefix('admin')->group(function () {
         Route::get('get_order_list', [UserController::class, 'get_order_list'])->name('get_order_list');
         Route::post('change_order_status', [UserController::class, 'change_order_status'])->name('change_order_status');
         // Route::post('/admin/order/update-status', [OrderController::class, 'updateStatus']);
+        
+        Route::get('get_setting', [CommonSettingController::class, 'get_setting'])->name('get_setting');
+        Route::post('change_setting', [CommonSettingController::class, 'change_setting'])->name('change_setting');
 
+        Route::resource('categories', CategoryController::class);
+        Route::post('categories/delete/{id}', [CategoryController::class, 'destroy_categories'])->name('categories.delete');
+       
+        Route::resource('brands', BrandController::class);
+        Route::post('brands/delete/{id}', [BrandController::class, 'destroy_brands'])->name('brands.delete');
     // });
-    Route::get('get_setting', [CommonSettingController::class, 'get_setting'])->name('get_setting');
-    Route::post('change_setting', [CommonSettingController::class, 'change_setting'])->name('change_setting');
 });
 
 Route::get('image-upload', [ImageController::class, 'index']);
