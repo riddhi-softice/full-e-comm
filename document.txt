@@ -1,0 +1,13 @@
+
+1) .env  and config/app.php files project path set
+
+2) composer require razorpay/razorpay 
+
+3) composer require yajra/laravel-datatables-oracle 
+
+4)  2fa Library
+composer require pragmarx/google2fa-laravel --ignore-platform-reqs
+
+composer require simplesoftwareio/simple-qrcode --ignore-platform-reqs
+composer require endroid/qr-code --ignore-platform-reqs
+

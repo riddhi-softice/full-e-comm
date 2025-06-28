@@ -1,0 +1,1 @@
+{"version":1,"defects":{"Tests\\Feature\\ExampleTest::test_the_application_returns_a_successful_response":7,"Tests\\Feature\\ProductCreateTest::test_user_can_create_product":8},"times":{"Tests\\Unit\\ExampleTest::test_that_true_is_true":0.64,"Tests\\Feature\\ExampleTest::test_the_application_returns_a_successful_response":1.986}}
