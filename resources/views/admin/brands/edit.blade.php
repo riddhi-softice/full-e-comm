@@ -27,7 +27,7 @@
                             </div>
                         @endif
 
-                        <form action="{{ route('brands.update', $brand->id) }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('brands.update', $brand->id) }}" method="POST" enctype="multipart/form-data" id="editForm">
                             @csrf
                             @method('PUT')
                             
@@ -37,19 +37,19 @@
                                     <input type="text" class="form-control" name="name" value="{{ old('name', $brand->name) }}" required>
                                 </div>
                             </div>
-                                                      
+                      
                             <div class="row mb-3">
-                                <label for="inputNumber" class="col-sm-2 col-form-label">Logo</label>
-                                <div class="col-sm-10">
-                                    <input class="form-control" type="file" id="logo" name="logo">
-                                    <img id="img_preview" src="{{ asset('assets/images/brands' . $brand->logo) }}" alt="Current Thumbnail" class="mt-2" style="max-width: 100px;">
+                                <label for="inputImage" class="col-sm-2 col-form-label">Logo</label>
+                                <div class="col-sm-8">
+                                    <input class="form-control" type="file" id="logo" name="logo" onchange="previewLogo(event)">
+                                    <img id="img_preview" src="{{ asset('public/assets/images/brands/' . $brand->logo) }}" alt="Current Thumbnail" class="mt-2" style="max-width: 100px;">
                                 </div>
                             </div>
 
                             <div class="row mb-3">
                                 {{-- <label class="col-sm-2 col-form-label"></label> --}}
                                 <div class="col-sm-10">
-                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <button type="submit" class="btn btn-primary" id="submitBtn">Update</button>
                                 </div>
                             </div>
                         </form>
@@ -60,4 +60,34 @@
         </div>
     </section>
 @endsection
-@yield('javascript')
+@section('javascript')
+
+<script>
+//  <!-- submit click disable button -->
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('editForm');
+    const button = document.getElementById('submitBtn');
+
+    if (form && button) {
+        form.addEventListener('submit', function () {
+            button.disabled = true;
+            button.innerText = 'Please wait...';
+        });
+    }
+});
+
+// images preview
+function previewLogo(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('img_preview');
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+@endsection

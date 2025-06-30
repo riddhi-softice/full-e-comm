@@ -22,18 +22,25 @@
                 <span>Users</span>
             </a>
         </li>
-       
-        <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('brands.index') ? '' : 'collapsed' }}" href="{{ route('brands.index') }}">
-                <i class="bi bi-list"></i>
-                <span>Brands</span>
-            </a>
-        </li>
-       
+              
         <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('categories.index') ? '' : 'collapsed' }}" href="{{ route('categories.index') }}">
                 <i class="bi bi-list"></i>
                 <span>Categories</span>
+            </a>
+        </li>
+       
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('sub_categories.index') ? '' : 'collapsed' }}" href="{{ route('sub_categories.index') }}">
+                <i class="bi bi-list"></i>
+                <span>Sub Categories</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('brands.index') ? '' : 'collapsed' }}" href="{{ route('brands.index') }}">
+                <i class="bi bi-list"></i>
+                <span>Brands</span>
             </a>
         </li>
         

@@ -1,11 +1,11 @@
 @extends('admin.layouts.app')
 @section('content')
     <div class="pagetitle">
-        <h1>Brands</h1>
+        <h1>SubCategories</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active">Brands</li>
+                <li class="breadcrumb-item active">SubCategories</li>
             </ol>
         </nav> 
     </div>
@@ -19,7 +19,7 @@
 
     <section class="section">
         <div class="alert alert-success alert-dismissible fade show" role="alert" id="alertMsg" style="display: none">
-            Brand deleted successfully.
+            SubCategory deleted successfully.
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
 
@@ -28,16 +28,16 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="card-title">Brand List</h5>
+                            <h5 class="card-title">SubCategory List</h5>
                             <div>
-                                <a href="{{ route('brands.create') }}" class="btn btn-primary">Add Brand</a>
+                                <a href="{{ route('sub_categories.create') }}" class="btn btn-primary">Add SubCategory</a>
                             </div>
                         </div>
                         <table class="table datatable text-capitalize ">
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Logo</th>
+                                    <th>Image</th>
                                     <th>Name</th>
                                     <th data-type="date" data-format="YYYY/DD/MM">Create Date</th>
                                     <th>Action</th>
@@ -45,13 +45,13 @@
                             </thead>
                             <tbody>
                                 @php $i = 1; @endphp
-                                @foreach ($brands as $value)
+                                @foreach ($sub_categories as $value)
                                     <tr>
                                         <td>{{ $i++ }}</td>
                                         <td>
-                                            @if ($value->logo)
-                                                <a href="{{ asset('public/assets/images/brands/' . $value->logo) }}" target="_blank">
-                                                    <img src="{{ asset('public/assets/images/brands/' . $value->logo) }}" alt="{{ $value->name }}" width="50" height="50">
+                                            @if ($value->image)
+                                                <a href="{{ asset('public/assets/images/sub_categories/' . $value->image) }}" target="_blank">
+                                                    <img src="{{ asset('public/assets/images/sub_categories/' . $value->image) }}" alt="{{ $value->name }}" width="50" height="50">
                                                 </a>
                                             @else
                                                 No image
@@ -60,12 +60,12 @@
                                         <td>{{ $value->name }}</td>
                                         <td>{{ $value->created_at->format('d M Y') }}</td>
                                         <td>
-                                            <a href="{{ route('brands.edit', $value->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                            <a href="{{ route('sub_categories.edit', $value->id) }}" class="btn btn-sm btn-warning">Edit</a>
                                             <button class="btn btn-danger btn-sm deleteData" data-id="{{ $value->id }}"
                                                 data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
                                                 Delete
                                             </button>
-                                            {{-- <form action="{{ route('brands.destroy', $value->id) }}" method="POST"
+                                            {{-- <form action="{{ route('sub_categories.destroy', $value->id) }}" method="POST"
                                                 style="display: inline-block;">
                                                 @csrf
                                                 @method('DELETE')
@@ -137,7 +137,7 @@
             var id = $(this).data('id');
             $.ajax({
                 type: "POST",
-                url: "{{ route('brands.delete', ':id') }}".replace(':id', id),
+                url: "{{ route('sub_categories.delete', ':id') }}".replace(':id', id),
                 success: function(data) {
                     $('#confirmDeleteModal').modal('hide');
                     $('#alertMsg').show().delay(3000)

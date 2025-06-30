@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ProductController as admin_product;
 use App\Http\Controllers\Admin\CommonSettingController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Admin\BrandController;
 
 use App\Http\Controllers\ImageController;
@@ -122,6 +123,9 @@ Route::prefix('admin')->group(function () {
 
         Route::resource('categories', CategoryController::class);
         Route::post('categories/delete/{id}', [CategoryController::class, 'destroy_categories'])->name('categories.delete');
+
+        Route::resource('sub_categories', SubCategoryController::class);
+        Route::post('sub_categories/delete/{id}', [SubCategoryController::class, 'destroy_sub_categories'])->name('sub_categories.delete');
        
         Route::resource('brands', BrandController::class);
         Route::post('brands/delete/{id}', [BrandController::class, 'destroy_brands'])->name('brands.delete');

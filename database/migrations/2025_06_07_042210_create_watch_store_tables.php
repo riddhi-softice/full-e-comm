@@ -125,6 +125,25 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::create('categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
+        Schema::create('sub_categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->foreignId('cat_id')->constrained();
+            $table->text('image')->nullable();
+            $table->timestamps();
+        });
+        Schema::create('brands', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->text('logo')->nullable();
+            $table->timestamps();
+        });
+
     }
 
     public function down(): void
@@ -139,6 +158,9 @@ return new class extends Migration
         Schema::dropIfExists('admins');
         Schema::dropIfExists('users');
         Schema::dropIfExists('common_settings');
+        Schema::dropIfExists('categories');
+        Schema::dropIfExists('sub_categories');
+        Schema::dropIfExists('brands');
     }
    
 

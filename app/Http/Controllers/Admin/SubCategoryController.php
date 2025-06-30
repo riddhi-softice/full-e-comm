@@ -4,40 +4,41 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Brand;
+use App\Models\Category;
+use App\Models\SubCategory;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
 
-class BrandController extends Controller
+class SubCategoryController extends Controller
 {
     public function index()
     {
-        $brands = Brand::latest()->get();
-        return view('admin.brands.index', compact('brands'));
+        $sub_categories = SubCategory::latest()->get();
+        return view('admin.sub_categories.index', compact('sub_categories'));
     }
 
     public function create()
     { 
-        return view('admin.brands.create');
+        $category = Category::latest()->get();
+        return view('admin.sub_categories.create',compact('category'));
     }
    
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'logo' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048', // max 2MB
+            'cat_id' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048', // max 2MB
         ]);
-    
         $outputFilename = '';
-            if ($request->hasFile('logo')) {
-            $image = $request->file('logo');
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
             $originalSizeBytes = $image->getSize();
             $originalSizeKB = $originalSizeBytes / 1024;
-    
             // Dynamic quality based on size (optional)
             $quality = 40; // Default quality for WebP
-    
-            $imagePath = public_path('assets/images/brands');
+
+            $imagePath = public_path('assets/images/sub_categories');
             $filenameBase = time() . '_' . rand(1000, 9999);
             $outputExtension = 'webp';
             $outputFilename = $filenameBase . '.' . $outputExtension;
@@ -57,34 +58,35 @@ class BrandController extends Controller
                 ->encode('webp', $quality)
                 ->save($outputFullPath);
         }
-    
         // Save to database
-        Brand::create([
+        SubCategory::create([
+            'cat_id' => $request->cat_id,
             'name' => $request->name,
-            'logo' => $outputFilename,
+            'image' => $outputFilename,
         ]);
-        return redirect()->route('brands.index')->with('success', 'Brand created successfully.');
+        return redirect()->route('sub_categories.index')->with('success', 'SubCategory created successfully.');
     }
     
-    public function edit(Brand $brand)
+    public function edit(SubCategory $sub_category)
     {
-        return view('admin.brands.edit', compact('brand'));
+        $category = Category::latest()->get();
+        return view('admin.sub_categories.edit', compact(['sub_category','category']));
     }
 
-    public function update(Request $request, Brand $brand)
+    public function update(Request $request, SubCategory $sub_category)
     {
         $outputFilename = '';
-        if ($request->hasFile('logo')) {
+        if ($request->hasFile('image')) {
 
             // REMOVE IMAGE 
-            $this->deleteImage($brand->logo);
+            $this->deleteImage($sub_category->image);
 
-            $image = $request->file('logo');
+            $image = $request->file('image');
             $originalSizeBytes = $image->getSize();
             $originalSizeKB = $originalSizeBytes / 1024;
             // Dynamic quality based on size (optional)
             $quality = 40; // Default quality for WebP
-            $imagePath = public_path('assets/images/brands');
+            $imagePath = public_path('assets/images/sub_categories');
             $filenameBase = time() . '_' . rand(1000, 9999);
             $outputExtension = 'webp';
             $outputFilename = $filenameBase . '.' . $outputExtension;
@@ -101,27 +103,29 @@ class BrandController extends Controller
                     })
                     ->encode('webp', $quality)
                     ->save($outputFullPath);
-            $input['logo'] = $outputFilename;
+            $input['image'] = $outputFilename;
         }
         $input['name'] = $request->name;
-        $brand->update($input);
+        $input['cate_id'] = $request->cate_id;
+        $sub_category->update($input);
 
-        return redirect()->route('brands.index')->with('success', 'Brand updated successfully.');
+        return redirect()->route('sub_categories.index')->with('success', 'SubCategory updated successfully.');
     }
 
-    public function destroy_brands($id)
+    public function destroy_sub_categories($id)
     {
-        $brand = Brand::findOrFail($id);
-        $this->deleteImage($brand->logo);  // REMOVE IMAGE 
-        $brand->delete();
-        return redirect()->route('brands.index')->with('success', 'Brand deleted successfully.');
+        $sub_category = SubCategory::findOrFail($id);
+        $this->deleteImage($sub_category->image);  // REMOVE IMAGE 
+        $sub_category->delete();
+        return redirect()->route('sub_categories.index')->with('success', 'SubCategory deleted successfully.');
     }
 
     protected function deleteImage($filename)
     {
-        $path = 'public/assets/images/brands/' . $filename;
+        $path = 'public/assets/images/sub_categories/' . $filename;
         if (File::exists($path)) {
             File::delete($path);
         }
     }
+    
 }
