@@ -70,7 +70,6 @@ class AuthController extends Controller
                 return redirect('admin/account_setting')->with('error', 'The previous password entered does not match the current one.');
             }
             $data->update(['password' => Hash::make($request->password)]);
-
             return redirect('admin/login')->with('success', 'The password has been changed successfully.');
         }
         return redirect('admin/dashboard')->with('error','Opps! Somthing wents wrong');

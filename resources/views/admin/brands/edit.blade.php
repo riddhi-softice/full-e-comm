@@ -37,7 +37,15 @@
                                     <input type="text" class="form-control" name="name" value="{{ old('name', $brand->name) }}" required>
                                 </div>
                             </div>
-                          
+                                                      
+                            <div class="row mb-3">
+                                <label for="inputNumber" class="col-sm-2 col-form-label">Logo</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" type="file" id="logo" name="logo">
+                                    <img id="img_preview" src="{{ asset('assets/images/brands' . $brand->logo) }}" alt="Current Thumbnail" class="mt-2" style="max-width: 100px;">
+                                </div>
+                            </div>
+
                             <div class="row mb-3">
                                 {{-- <label class="col-sm-2 col-form-label"></label> --}}
                                 <div class="col-sm-10">
