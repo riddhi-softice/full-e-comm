@@ -11,7 +11,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::latest()->get();
+        $categories = Category::withCount('subcategories')->latest()->get();
         return view('admin.categories.index', compact('categories'));
     }
 

@@ -38,6 +38,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Image</th>
+                                    <th>Category</th>
                                     <th>Name</th>
                                     <th data-type="date" data-format="YYYY/DD/MM">Create Date</th>
                                     <th>Action</th>
@@ -57,6 +58,7 @@
                                                 No image
                                             @endif
                                         </td>
+                                        <td>{{ $value->category->name }}</td>
                                         <td>{{ $value->name }}</td>
                                         <td>{{ $value->created_at->format('d M Y') }}</td>
                                         <td>

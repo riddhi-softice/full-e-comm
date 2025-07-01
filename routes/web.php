@@ -112,6 +112,7 @@ Route::prefix('admin')->group(function () {
         Route::resource('products', admin_product::class);
         Route::post('admin/products/delete/{id}', [admin_product::class, 'destroy_products'])->name('products.delete');
         Route::post('/products/image/{id}', [admin_product::class, 'removeImage'])->name('products.image.delete');
+        Route::get('get-subcategories/{cat_id}', [admin_product::class, 'getSubcategories'])->name('product.sub-cate');
 
         Route::resource('users', UserController::class);
         Route::get('get_order_list', [UserController::class, 'get_order_list'])->name('get_order_list');

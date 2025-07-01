@@ -35,14 +35,14 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Price</label>
                         <div class="border rounded p-2 bg-light">
-                            ₹ {{ number_format(old('price', $product->price), 2) }}
+                            $ {{ number_format(old('price', $product->price), 2) }}
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Sale Price</label>
                         <div class="border rounded p-2 bg-light">
-                            ₹ {{ number_format(old('reseller_price', $product->reseller_price), 2) }}
+                            $ {{ number_format(old('reseller_price', $product->reseller_price), 2) }}
                         </div>
                     </div>
 

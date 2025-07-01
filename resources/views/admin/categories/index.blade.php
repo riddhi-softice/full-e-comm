@@ -38,6 +38,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Name</th>
+                                    <th>SubCategory</th>
                                     <th data-type="date" data-format="YYYY/DD/MM">Create Date</th>
                                     <th>Action</th>
                                 </tr>
@@ -48,6 +49,7 @@
                                     <tr>
                                         <td>{{ $i++ }}</td>
                                         <td>{{ $value->name }}</td>
+                                        <td>{{ $value->subcategories_count }}</td>
                                         <td>{{ $value->created_at->format('d M Y') }}</td>
                                         <td>
                                             <a href="{{ route('categories.edit', $value->id) }}" class="btn btn-sm btn-warning">Edit</a>

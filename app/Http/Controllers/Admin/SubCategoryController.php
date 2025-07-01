@@ -8,12 +8,20 @@ use App\Models\Category;
 use App\Models\SubCategory;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
+use DB;
 
 class SubCategoryController extends Controller
 {
     public function index()
     {
-        $sub_categories = SubCategory::latest()->get();
+        // $sub_categories =  DB::table('sub_categories as sc')
+        // ->join('categories as c','sc.cat_id','=', 'c.id')
+        // ->select('sc.*','c.name as cate_name')
+        // ->get();
+        
+        $sub_categories = SubCategory::with('category')->latest()->get();
+        // dd($sub_categories);
+
         return view('admin.sub_categories.index', compact('sub_categories'));
     }
 
@@ -75,6 +83,8 @@ class SubCategoryController extends Controller
 
     public function update(Request $request, SubCategory $sub_category)
     {
+        // dd($sub_category);
+        // dd($request->all());
         $outputFilename = '';
         if ($request->hasFile('image')) {
 
@@ -106,7 +116,7 @@ class SubCategoryController extends Controller
             $input['image'] = $outputFilename;
         }
         $input['name'] = $request->name;
-        $input['cate_id'] = $request->cate_id;
+        $input['cat_id'] = $request->cat_id;
         $sub_category->update($input);
 
         return redirect()->route('sub_categories.index')->with('success', 'SubCategory updated successfully.');
