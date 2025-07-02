@@ -23,6 +23,14 @@
             </a>
         </li>
               
+        
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('brands.index') ? '' : 'collapsed' }}" href="{{ route('brands.index') }}">
+                <i class="bi bi-list"></i>
+                <span>Brands</span>
+            </a>
+        </li>
+        
         <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('categories.index') ? '' : 'collapsed' }}" href="{{ route('categories.index') }}">
                 <i class="bi bi-list"></i>
@@ -36,14 +44,14 @@
                 <span>Sub Categories</span>
             </a>
         </li>
-
+      
         <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('brands.index') ? '' : 'collapsed' }}" href="{{ route('brands.index') }}">
+            <a class="nav-link {{ request()->routeIs('attributes.index') ? '' : 'collapsed' }}" href="{{ route('attributes.index') }}">
                 <i class="bi bi-list"></i>
-                <span>Brands</span>
+                <span>Attributes</span>
             </a>
         </li>
-        
+
         <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('products.*') ? '' : 'collapsed' }}" href="{{ route('products.index') }}">
                 <i class="bi bi-list"></i>

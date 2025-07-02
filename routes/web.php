@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\CommonSettingController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\AttributeController;
 
 use App\Http\Controllers\ImageController;
 // use Intervention\Image\Facades\Image;
@@ -130,6 +131,9 @@ Route::prefix('admin')->group(function () {
        
         Route::resource('brands', BrandController::class);
         Route::post('brands/delete/{id}', [BrandController::class, 'destroy_brands'])->name('brands.delete');
+       
+        Route::resource('attributes', AttributeController::class);
+        Route::post('attributes/delete/{id}', [AttributeController::class, 'destroy_attributes'])->name('attributes.delete');
     // });
 });
 
