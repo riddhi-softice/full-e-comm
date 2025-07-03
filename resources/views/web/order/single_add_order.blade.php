@@ -25,7 +25,7 @@
                 @csrf
 
                 <div class="row">
-                    <div class="col-lg-8">
+                    <div class="col-lg-9">
                         <h2 class="checkout-title" style="margin-top:0">Billing Details</h2><!-- End .checkout-title -->
 
                         <div class="row">
@@ -77,44 +77,35 @@
                         <label>Order notes (optional)</label>
                         <textarea class="form-control" cols="10" rows="2" name="order_note" placeholder="Notes about your order, e.g. special notes for delivery"></textarea>
 
+                        <input type="hidden" class="form-control" name="product_id" value="{{ $data['product_details']['id'] }}" required>
+                        <input type="hidden" class="form-control" name="total" value="{{ $data['product_details']->display_price }}" required>
+                        <input type="hidden" class="form-control" name="currency" value="{{ $data['currency'] }}" required>
 
                     </div><!-- End .col-lg-9 -->
 
-                    <aside class="col-lg-4">
+                    <aside class="col-lg-3">
                         <div class="summary">
                             <h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
-                            <input type="hidden" class="form-control" name="currency" value="{{ $data['currency'] }}" required>
-                            <input type="hidden" class="form-control" name="total" value="{{ $data['total'] }}" required>
 
                             <table class="table table-summary">
                                 <thead>
                                     <tr>
                                         <th>Product</th>
-                                        {{-- <th>Quntity</th> --}}
-                                        <th>SubTotal</th>
+                                        <th>Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-
-                                    @foreach ($data['product_list'] as $key=>$value)
-                                   
-                                        <input type="hidden" class="form-control" name="product_id[]" value="{{ $value->id }}" required>
-                                        <input type="hidden" class="form-control" name="price[]" value="{{ $value->price }}" required>
-                                        <input type="hidden" class="form-control" name="quantity[]" value="{{ $value->quantity }}" required>
-
-                                        <tr>
-                                            <td><a href="{{ route('product.show',$value['id']) }}">{{ $value['name'] }}</a></td>
-                                            {{-- <td> {{ $value['quantity'] }}</td>  --}}
-                                            <td>
-                                                @if(strtolower($data['country']) === 'india')
-                                                    ₹{{ $value->display_price }} 
-                                                @else
-                                                    ${{ number_format($value->display_price, 2) }} ({{$value['quantity']}})
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-
+                                    <tr>
+                                        <td><a href="{{ route('product.show',$data['product_details']['id']) }}">{{ $data['product_details']['name'] }}</a></td>
+                                        <!-- <td>₹{{ number_format($data['product_details']['price'], 2) }}</td> -->
+                                        <td>
+                                            @if(strtolower($data['country']) === 'india')
+                                                ₹{{ $data['product_details']->display_price }}
+                                            @else
+                                                ${{ number_format($data['product_details']->display_price, 2) }}
+                                            @endif
+                                        </td>
+                                    </tr>
                                     <!-- <tr class="summary-subtotal">
                                         <td>Payable Amount:</td>
                                         <td>$160.00</td>
@@ -125,12 +116,12 @@
                                     </tr>
                                     <tr class="summary-total">
                                         <td>Payable Amount:</td>
-                                        <!-- <td>₹{{ number_format($data['total'], 2) }}</td> -->
+                                        <!-- <td>₹{{ number_format($data['product_details']['price'], 2) }}</td> -->
                                         <td>
                                             @if(strtolower($data['country']) === 'india')
-                                                ₹{{ $data['total'] }}
+                                                ₹{{ $data['product_details']->display_price }}
                                             @else
-                                                ${{ number_format($data['total'], 2) }}
+                                                ${{ number_format($data['product_details']->display_price, 2) }}
                                             @endif
                                         </td>
                                     </tr><!-- End .summary-total -->
@@ -138,6 +129,7 @@
                             </table><!-- End .table table-summary -->
 
                             <div class="accordion-summary" id="accordion-payment">
+                                
                                 <div class="card">
                                     <div class="card-header" id="heading-3">
                                         <h2 class="card-title">
@@ -172,9 +164,11 @@
                                         </div><!-- End .card-body -->
                                     </div><!-- End .collapse -->
                                 </div><!-- End .card -->
+                              
                             </div><!-- End .accordion -->
 
                             <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+
                             <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block" id="razorpay-button">
                                 <span class="btn-text">Place Order</span>
                                 <span class="btn-hover-text">Proceed to Checkout</span>
@@ -196,14 +190,11 @@
     document.getElementById('razorpay-button').onclick = function (e) {
         e.preventDefault();
 
-        // document.querySelector('form').submit();
-        // return;
-
         var options = {
-            // key: "rzp_test_P6mt7XmeAvOAdx", // Replace with your Razorpay key 
             key: "{{ env('RAZORPAY_KEY') }}", // Replace with your Razorpay key 
-            amount: "{{ $data['pay_amount'] }}", // in paise or cents
+            amount: "{{ $data['amount'] }}", // in paise or cents
             currency: "{{ $data['currency'] }}", // "USD",INR
+
             // amount : "100",
             // currency: "INR",
             name: "Reach Gems",

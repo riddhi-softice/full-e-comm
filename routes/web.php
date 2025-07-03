@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\AttributeController;
+use App\Http\Controllers\Admin\ReviewController;
 
 use App\Http\Controllers\ImageController;
 // use Intervention\Image\Facades\Image;
@@ -60,8 +61,17 @@ Route::get('privacypolicy', function () {
 
     Route::middleware(['auth'])->group(function () {
 
+        Route::controller(CartController::class)->group(function () {
+
+            Route::get('addCart/{id}','addToCart')->name('cart.add');
+            Route::get('product/cart','showCart')->name('cart.index');
+            Route::delete('/cart/{id}','removeItem')->name('cart.remove');
+            Route::post('cart/update', 'updateCart')->name('cart.update');
+        });
+
         Route::controller(OrderController::class)->group(function () { 
-            Route::get('addOrder/{id}','addOrder')->name('order.add');
+            Route::get('addOrderSingle/{id}','addOrderSingle')->name('order.add');
+            Route::get('addOrder','addOrder')->name('order.add');
             Route::post('place/order','placeOrder')->name('order.place');
             // Route::post('place/order','checkout')->name('order.place');
             Route::get('orders/history', 'orderHistory')->name('orders.history');  // order page 
@@ -134,6 +144,8 @@ Route::prefix('admin')->group(function () {
        
         Route::resource('attributes', AttributeController::class);
         Route::post('attributes/delete/{id}', [AttributeController::class, 'destroy_attributes'])->name('attributes.delete');
+
+        Route::resource('reviews', ReviewController::class);
     // });
 });
 

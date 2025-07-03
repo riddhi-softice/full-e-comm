@@ -146,6 +146,34 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::create('related_products', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('product_id');      // main product
+            $table->unsignedBigInteger('related_product_id');      // related product
+            $table->timestamps();
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->foreign('related_product_id')->references('id')->on('products')->onDelete('cascade');
+        });
+
+        Schema::create('reviews', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('product_id')->constrained();
+            $table->foreignId('user_id')->constrained();
+            $table->tinyInteger('rating');
+            $table->text('comment')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('cart_items', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('product_id');
+            $table->integer('quantity')->default(1);
+            $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+        });        
     }
 
     public function down(): void
@@ -163,6 +191,9 @@ return new class extends Migration
         Schema::dropIfExists('categories');
         Schema::dropIfExists('sub_categories');
         Schema::dropIfExists('brands');
+        Schema::dropIfExists('related_products');
+        Schema::dropIfExists('reviews');
+        Schema::dropIfExists('cart_items');
     }
    
 

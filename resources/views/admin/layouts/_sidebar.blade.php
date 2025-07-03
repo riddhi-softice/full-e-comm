@@ -22,7 +22,6 @@
                 <span>Users</span>
             </a>
         </li>
-              
         
         <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('brands.index') ? '' : 'collapsed' }}" href="{{ route('brands.index') }}">
@@ -63,6 +62,13 @@
             <a class="nav-link {{ request()->routeIs('get_order_list') ? '' : 'collapsed' }}" href="{{ route('get_order_list') }}">
                 <i class="bi bi-list"></i>
                 <span>Orders</span>
+            </a>
+        </li>
+       
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('reviews.index') ? '' : 'collapsed' }}" href="{{ route('reviews.index') }}">
+                <i class="bi bi-list"></i>
+                <span>Reviews</span>
             </a>
         </li>
        

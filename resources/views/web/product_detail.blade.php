@@ -58,6 +58,13 @@
                     <div class="product-details">
                         <h1 class="product-title">{{ $product->name }}</h1>
 
+                        <div class="ratings-container">
+                            <div class="ratings">
+                                <div class="ratings-val" style="width: {{ ($product->rating ?? 0) * 20 }}%;"></div><!-- End .ratings-val -->
+                            </div><!-- End .ratings -->
+                            <a class="ratings-text" href="#product-review-link" id="review-link">({{ $product->reviews_count ?? 0 }} Reviews)</a>
+                        </div><!-- End .rating-container -->
+
                         <div class="product-price">
                             <span style="text-decoration: line-through;">
                                 <!-- MRP : ${{ number_format($product->reseller_price) }} -->
@@ -82,17 +89,40 @@
                             <p>{{ $product->description }}</p>
                         </div>
 
-                        @php
+                        @foreach ($attributeGroups as $attributeName => $values)
+                            <div class="details-filter-row details-row-size">
+                                <label for="{{ strtolower($attributeName) }}">{{ ucfirst($attributeName) }}:</label>
+                                <div class="select-custom" style="margin-left: 15px;">
+                                    <select name="attributes[{{ strtolower($attributeName) }}]" id="{{ strtolower($attributeName) }}" class="form-control">
+                                        <option value="" selected disabled>Select a {{ $attributeName }}</option>
+                                        @foreach($values as $val)
+                                            <option value="{{ strtolower($val) }}">{{ ucfirst($val) }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        @endforeach
+
+                        <div class="product-details-action">
+                            <a href="{{ route('order.add') }}" class="btn-product btn-cart"><span>Order Now</span></a>
+                            {{-- <a href="{{ route('order.add', $product->id) }}" class="btn-product btn-cart"><span>Order Now</span></a> --}}
+                            {{-- <a href="#" class="btn-product btn-cart"><span>add to cart</span></a> --}}
+                            <div class="details-action-wrapper">
+                                <a href="{{ route('cart.add', $product->id) }}" class="btn-product btn-compare" title="Cart"><span>Add to cart</span></a>
+                                <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
+                            </div><!-- End .details-action-wrapper -->
+                        </div><!-- End .product-details-action -->
+
+                        {{-- @php
                             $whatsappNumber = '917016126901';
                             $productName = $product->name;
                             $message = "Hello, I am interested in this product:\n\n$productName";
                         @endphp
-
                         <div class="product-details-action">
                             <a href="{{ route('order.add', $product->id) }}" class="btn-product btn-cart"><span>Order Now</span></a>
                             <!-- <button id="razorpay-button" class="btn-product btn-cart" style="background: transparent;">Order Now </button> -->
                             <!-- <a href="https://wa.me/{{ $whatsappNumber }}?text={{ urlencode($message) }}" class="btn-product btn-cart"><span>Order Now</span></a> -->
-                        </div><!-- End .product-details-action -->
+                        </div><!-- End .product-details-action --> --}}
 
                         <div class="product-details-footer">
                             <div class="social-icons social-icons-sm">
@@ -129,11 +159,13 @@
                     <a class="nav-link" id="product-shipping-link" data-toggle="tab" href="#product-shipping-tab"
                         role="tab" aria-controls="product-shipping-tab" aria-selected="false">Shipping & Returns</a>
                 </li>
-
+                <li class="nav-item">
+                    <a class="nav-link" id="product-review-link" data-toggle="tab" href="#product-review-tab" role="tab"
+                        aria-controls="product-review-tab" aria-selected="false">Reviews ({{ $product->reviews->count() }})</a>
+                </li>
             </ul>
             <div class="tab-content">
-                <div class="tab-pane fade show active" id="product-desc-tab" role="tabpanel"
-                    aria-labelledby="product-desc-link">
+                <div class="tab-pane fade show active" id="product-desc-tab" role="tabpanel" aria-labelledby="product-desc-link">
                     <div class="product-desc-content">
                         {!! $product->long_desc !!}
                     </div><!-- End .product-desc-content -->
@@ -143,13 +175,46 @@
                         <p>{!! $product->additional_info !!}</p>
                     </div>
                 </div> -->
-                <div class="tab-pane fade" id="product-shipping-tab" role="tabpanel"
-                    aria-labelledby="product-shipping-link">
+
+                <div class="tab-pane fade" id="product-shipping-tab" role="tabpanel" aria-labelledby="product-shipping-link">
                     <div class="product-desc-content">
                         {!! $product->shipping_info !!}
                     </div><!-- End .product-desc-content -->
                 </div><!-- .End .tab-pane -->
 
+                <div class="tab-pane fade" id="product-review-tab" role="tabpanel" aria-labelledby="product-review-link">
+                    <div class="reviews">
+                        <h3>Reviews ({{ $product->reviews->count() }})</h3>
+
+                        @forelse ($product->reviews as $review)
+                            <div class="review">
+                                <div class="row no-gutters">
+                                    <div class="col-auto">
+                                        <h4><a href="#">{{ $review->user->name ?? 'Anonymous' }}</a></h4>
+                                        <div class="ratings-container">
+                                            <div class="ratings">
+                                                <div class="ratings-val" style="width: {{ $review->rating * 20 }}%;"></div>
+                                            </div>
+                                        </div>
+                                        <span class="review-date">{{ $review->created_at->diffForHumans() }}</span>
+                                    </div>
+                                    <div class="col">
+                                        <h4>{{ $review->review_title ?? 'No Title' }}</h4>
+                                        <div class="review-content">
+                                            <p>{{ $review->comment }}</p>
+                                        </div>
+                                        <!-- <div class="review-action">
+                                            <a href="#"><i class="icon-thumbs-up"></i>Helpful (0)</a>
+                                            <a href="#"><i class="icon-thumbs-down"></i>Unhelpful (0)</a>
+                                        </div> -->
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <p>No reviews yet.</p>
+                        @endforelse
+                    </div>
+                </div>
             </div><!-- End .tab-content -->
         </div><!-- End .product-details-tab -->
 

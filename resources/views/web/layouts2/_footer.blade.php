@@ -50,6 +50,7 @@
                                  @endif
                              </li>
                              <li><a href="{{ url('orders/history') }}">Track My Order</a></li>
+                             <li><a href="{{ route('cart.index') }}"> My Cart</a></li>
                          </ul>
                      </div>
                  </div>

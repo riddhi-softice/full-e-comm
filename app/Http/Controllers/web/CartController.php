@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-    public function showCart()
+    public function showCart() 
     {
         $uid = auth()->id();
         $cartItems = CartItem::with('product.firstImage')->where('user_id', $uid)->get();

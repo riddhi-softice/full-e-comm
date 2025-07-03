@@ -1,164 +1,103 @@
 @extends('web.layouts2.app')
 <style>
-/* .intro-slider .slide-image img {
-    width: 100%;
-    object-fit: cover;
-}
-.intro-slider-container {
-    max-height: 520px;
-    overflow: hidden;
-}
-.intro-slider-container,
-.intro-slide {
-    background-color: transparent !important;
-}
-.slider-container-ratio .intro-slider,
-.slide-image>picture,
-.slide-image>img {
-    height: 500px;
-} */
-
-.intro-slider-container {
-    max-height: 520px;
-    overflow: hidden;
-}
-.intro-slider-container,
-.intro-slide {
-    background-color: transparent !important;
-}
-
-/* Tablet (768px – 991.98px) */
-@media (min-width: 768px) and (max-width: 991.98px) {
     .intro-slider-container {
-        max-height: 319px;
-    }
-}
-/* Medium Phones (481px – 767.98px) */
-@media (min-width: 481px) and (max-width: 767.98px) {
-    .intro-slider-container {
-        max-height: 400px;
-    }
-}
-/* Small Phones (≤480px) */
-@media (max-width: 480px) {
-    .intro-slider-container {
-        max-height: 360px;
-    }
-}
-@media (min-width: 530px) and (max-width: 550px) {
-    .intro-slider-container {
-        max-height: 320px !important;
-    }
-}
-/* Large Tablets and Small Laptops (1024px – 1199.98px) */
-@media (min-width: 1024px) and (max-width: 1199.98px) {
-    .intro-slider-container {
-        max-height: 360px;
-        /* or your preferred height */
-    }
-}
-
-/* .owl-simple.owl-nav-inside .owl-dots {
-    bottom: 12pc !important;
-}
-
-.owl-simple .owl-nav [class*='owl-'] {
-    top: 35% !important;
-}
-
-@media (min-width: 768px) and (max-width: 830px) {
-    .owl-simple.owl-nav-inside .owl-dots {
-        bottom: 9pc !important; 
-    }
-} */
-
-/* === Default (Desktop and Large Screens) === */
-.owl-simple.owl-nav-inside .owl-dots {
-    position: absolute;
-    bottom: 12pc !important;
-    left: 0;
-    right: 0;
-    display: flex !important;
-    justify-content: center;
-}
-
-.owl-simple .owl-nav [class*='owl-'] {
-    position: absolute;
-    top: 37% !important;
-    transform: translateY(-50%);
-}
-
-/* === Tablet (iPad Air: 768px–991.98px) === */
-@media (min-width: 768px) and (max-width: 900px) {
-    .owl-simple.owl-nav-inside .owl-dots {
-        bottom: 9pc !important;
-    }
-    .owl-simple .owl-nav [class*='owl-'] {
-        top: 40% !important;
-    }
-}
-@media (min-width: 912px) and (max-width: 991.98px) {
-    .owl-simple.owl-nav-inside .owl-dots {
-        bottom: 10pc !important;
-    }
-}
-/* === Mobile (up to 767.98px) === */
-@media (max-width: 767.98px) {
-    .owl-simple.owl-nav-inside .owl-dots {
-        bottom: 3pc !important;
-    }
-    .owl-simple .owl-nav [class*='owl-'] {
-        top: 45% !important;
-    }
-}
-@media (min-width: 481px) and (max-width: 767.98px) {
-    /* @media (min-width: 481px) and (max-width: 766.98px) { */
-    .owl-simple.owl-nav-inside .owl-dots {
-        bottom: 6pc !important;
-        /* Adjust based on your layout */
-    }
-    .owl-simple .owl-nav [class*='owl-'] {
-        top: 42% !important;
-    }
-}
-@media (max-width: 359.98px) {
-    .owl-simple.owl-nav-inside .owl-dots {
-        bottom: 2pc !important;
-        /* 2pc = 32px */
-    }
-    .owl-simple .owl-nav [class*='owl-'] {
-        top: 47% !important;
-    }
-}
-/* .intro-slider-container {
-    position: relative;
-} */
-/* @media (min-width: 768px) and (max-width: 991.98px) {
-    .intro-slider .slide-image img {
-    width: 100%;
-    object-fit: cover;
-    }
-    .intro-slider-container {
-        max-height: 500px;
+        max-height: 520px;
         overflow: hidden;
     }
     .intro-slider-container,
     .intro-slide {
         background-color: transparent !important;
     }
-    .slider-container-ratio .intro-slider,
-    .slide-image>picture,
-    .slide-image>img {
-        height: 480px;
+
+    /* Tablet (768px – 991.98px) */
+    @media (min-width: 768px) and (max-width: 991.98px) {
+        .intro-slider-container {
+            max-height: 319px;
+        }
     }
-} */
-/* @media (max-width: 480px) {
-    .intro-slider .slide-image img {
-        height: 350px !important;
-        width: 100%;
-        object-fit: cover;
+    /* Medium Phones (481px – 767.98px) */
+    @media (min-width: 481px) and (max-width: 767.98px) {
+        .intro-slider-container {
+            max-height: 400px;
+        }
     }
-} */
+    /* Small Phones (≤480px) */
+    @media (max-width: 480px) {
+        .intro-slider-container {
+            max-height: 360px;
+        }
+    }
+    @media (min-width: 530px) and (max-width: 550px) {
+        .intro-slider-container {
+            max-height: 320px !important;
+        }
+    }
+    /* Large Tablets and Small Laptops (1024px – 1199.98px) */
+    @media (min-width: 1024px) and (max-width: 1199.98px) {
+        .intro-slider-container {
+            max-height: 360px;
+            /* or your preferred height */
+        }
+    }
+
+    /* === Default (Desktop and Large Screens) === */
+    .owl-simple.owl-nav-inside .owl-dots {
+        position: absolute;
+        bottom: 12pc !important;
+        left: 0;
+        right: 0;
+        display: flex !important;
+        justify-content: center;
+    }
+
+    .owl-simple .owl-nav [class*='owl-'] {
+        position: absolute;
+        top: 37% !important;
+        transform: translateY(-50%);
+    }
+
+    /* === Tablet (iPad Air: 768px–991.98px) === */
+    @media (min-width: 768px) and (max-width: 900px) {
+        .owl-simple.owl-nav-inside .owl-dots {
+            bottom: 9pc !important;
+        }
+        .owl-simple .owl-nav [class*='owl-'] {
+            top: 40% !important;
+        }
+    }
+    @media (min-width: 912px) and (max-width: 991.98px) {
+        .owl-simple.owl-nav-inside .owl-dots {
+            bottom: 10pc !important;
+        }
+    }
+    /* === Mobile (up to 767.98px) === */
+    @media (max-width: 767.98px) {
+        .owl-simple.owl-nav-inside .owl-dots {
+            bottom: 3pc !important;
+        }
+        .owl-simple .owl-nav [class*='owl-'] {
+            top: 45% !important;
+        }
+    }
+    @media (min-width: 481px) and (max-width: 767.98px) {
+        /* @media (min-width: 481px) and (max-width: 766.98px) { */
+        .owl-simple.owl-nav-inside .owl-dots {
+            bottom: 6pc !important;
+            /* Adjust based on your layout */
+        }
+        .owl-simple .owl-nav [class*='owl-'] {
+            top: 42% !important;
+        }
+    }
+    @media (max-width: 359.98px) {
+        .owl-simple.owl-nav-inside .owl-dots {
+            bottom: 2pc !important;
+            /* 2pc = 32px */
+        }
+        .owl-simple .owl-nav [class*='owl-'] {
+            top: 47% !important;
+        }
+    }
 </style>
 
 @section('content')
@@ -229,9 +168,31 @@
 
                     <span class="slider-loader"></span>
                 </div>
-            </div>
+            </div>            
+        </div> <!-- End .row -->
 
-        </div>
+        <div class="mb-3"></div><!-- End .mb-6 -->
+
+        <div class="owl-carousel owl-simple" data-toggle="owl" data-owl-options='{
+            "nav": false, 
+            "dots": false,
+            "margin": 30,
+            "loop": false,
+            "responsive": {
+                "0": {"items": 2},
+                "420": {"items": 3},
+                "600": {"items": 4},
+                "900": {"items": 5},
+                "1024": {"items": 6}
+            }
+        }'>
+
+        @foreach ($data['brands'] as $brand)
+        <a href="#" class="brand">
+            <img src="{{ asset('public/assets/images/brands/' . $brand->logo) }}" alt="{{ $brand->name }}">
+        </a>
+        @endforeach
+    </div><!-- End .owl-carousel -->
     </div>
 </div>
 
@@ -243,6 +204,51 @@
 <div class="mb-3 d-block d-md-none"></div>
 
 <div class="container">
+
+    <div class="heading heading-center mb-6">
+        <h2 class="title">Recent Arrivals</h2>
+        <ul class="nav nav-pills nav-border-anim justify-content-center" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="top-all-link" data-toggle="tab" href="#top-all-tab" role="tab"
+                    aria-controls="top-all-tab" aria-selected="true">All</a>
+            </li>
+            @foreach ($data['categories'] as $category)
+            <li class="nav-item">
+                <a class="nav-link" id="top-{{ $category->id }}-link" data-toggle="tab"
+                    href="#top-{{ $category->id }}-tab" role="tab" aria-controls="top-{{ $category->id }}-tab"
+                    aria-selected="false">{{ $category->name }}</a>
+            </li>
+            @endforeach
+        </ul>
+    </div>
+    <!-- End .heading -->
+
+    <div class="tab-content">
+        <!-- All Products Tab -->
+        <div class="tab-pane fade show active" id="top-all-tab" role="tabpanel" aria-labelledby="top-all-link">
+            <div class="row justify-content-center">
+                @foreach ($data['all_products'] as $product)
+                    @include('web.partials.product-card', ['product' => $product])
+                @endforeach
+            </div>
+        </div>
+
+        <!-- Category Specific Tabs -->
+        @foreach ($data['categories'] as $category)
+        <div class="tab-pane fade" id="top-{{ $category->id }}-tab" role="tabpanel" aria-labelledby="top-{{ $category->id }}-link">
+            <div class="row justify-content-center">
+                @foreach ($category->products as $product)
+                    @include('web.partials.product-card', ['product' => $product])
+                @endforeach
+            </div>
+        </div>
+        @endforeach
+    </div>
+    <!-- .End .tab-pane -->
+
+</div><!-- End .tab-content -->
+
+{{-- <div class="container">
     <div class="heading heading-center mb-6">
         <h2 class="title">Recently arrived</h2>
     </div>
@@ -258,7 +264,7 @@
         </div>
     </div>
     <!-- .End .tab-pane -->
-</div><!-- End .tab-content -->
+</div><!-- End .tab-content --> --}}
 
 <!-- @if(count($data['all_products']) == 4)
 <div class="more-container text-center">

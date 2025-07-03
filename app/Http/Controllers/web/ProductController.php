@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Category;
 use DB;
 
 class ProductController extends Controller
@@ -69,6 +70,9 @@ class ProductController extends Controller
             $product->display_price = $isIndia ? $product->price * $usdRate : $product->price;
             return $product;
         });
+
+        $data['brands'] = DB::table('brands')->get(); 
+        $data['categories'] = Category::with(['products.images'])->get();
         $data['all_products'] = $products;
         $data['country'] = $country; // Optional: show country on frontend
 
@@ -110,7 +114,6 @@ class ProductController extends Controller
         $data['country'] = $country; // Optional: show country on frontend
 
         return view('web.more_product', compact('data'));
-        
         // $data['all_products'] = Product::with('images')->latest()->paginate(12); 
         // return view('web.more_product', compact('data'));
     }
@@ -133,11 +136,21 @@ class ProductController extends Controller
         $usdRate = DB::table('common_settings')->where('setting_key', 'USD_price')->value('setting_value');
         $usdRate = floatval($usdRate); // Ensure it's numeric
 
-        $product = Product::with(['images'])->findOrFail($id);
+        // $product = Product::with(['images'])->findOrFail($id);
+        $product = Product::with(['images','category', 'attributeValues.attribute','reviews.user', 'relatedProducts.firstImage', 'relatedProducts.reviews' => function ($q) {
+            $q->select('id', 'product_id', 'rating');
+        }])->withCount('reviews')->withAvg('reviews', 'rating')->findOrFail($id);
+
+        $product->rating = round($product->reviews_avg_rating ?? 0, 1);
         $product->display_price = $isIndia ? $product->price * $usdRate : $product->price;
         $product->reseller_display_price = $isIndia ? $product->reseller_price * $usdRate : $product->reseller_price;
 
-        return view('web.product_detail', compact('product','country'));
+        $attributeGroups = [];
+        foreach ($product->attributeValues as $attVal) {
+            $attributeGroups[$attVal->attribute->name][] = $attVal->value;
+        }
+        // dd($attributeGroups);
+        return view('web.product_detail', compact('product','country','attributeGroups'));
     }
 
 }
