@@ -26,16 +26,13 @@
                             @endphp
 
                             @if ($primaryImage)
-                            <figure class="product-main-image">
-                                <img id="product-zoom"
-                                    src="{{ asset('public/assets/images/demos/demo-2/products/' . $primaryImage->path) }}"
-                                    data-zoom-image="{{ asset('public/assets/images/demos/demo-2/products/' . $primaryImage->path) }}"
-                                    alt="Main product image">
-
-                                <a href="#" id="btn-product-gallery" class="btn-product-gallery">
-                                    <i class="icon-arrows"></i>
-                                </a>
-                            </figure>
+                                <figure class="product-main-image">
+                                    <img id="product-zoom" src="{{ asset('public/assets/images/demos/demo-2/products/' . $primaryImage->path) }}"
+                                        data-zoom-image="{{ asset('public/assets/images/demos/demo-2/products/' . $primaryImage->path) }}" alt="Main product image">
+                                    <a href="#" id="btn-product-gallery" class="btn-product-gallery">
+                                        <i class="icon-arrows"></i>
+                                    </a>
+                                </figure>                                
                             @endif
 
                             {{-- GALLERY --}}
@@ -44,12 +41,11 @@
                                 <a class="product-gallery-item {{ $loop->first ? 'active' : '' }}" href="#"
                                     data-image="{{ asset('public/assets/images/demos/demo-2/products/' . $image->path) }}"
                                     data-zoom-image="{{ asset('public/assets/images/demos/demo-2/products/' . $image->path) }}">
-                                    <img src="{{ asset('public/assets/images/demos/demo-2/products/' . $image->path) }}"
-                                        alt="product image">
+                                    <img src="{{ asset('public/assets/images/demos/demo-2/products/' . $image->path) }}" alt="product image">
                                 </a>
                                 @endforeach
                             </div>
-
+                            
                         </div>
                     </div>
                 </div>
@@ -75,8 +71,9 @@
                                 @endif
                             </span>
                         </div>
+
                         <div class="product-price">
-                            <span style="color: red;">
+                            <span style="color: red;" id="price-display">
                                 <!-- SALE PRICE : ${{ number_format($product->price) }} -->
                                 @if(strtolower($country) === 'india')
                                     SALE PRICE : ₹{{ $product->display_price }}
@@ -85,21 +82,45 @@
                                 @endif
                             </span>
                         </div>
+                        
                         <div class="product-content">
                             <p>{{ $product->description }}</p>
                         </div>
 
                         @foreach ($attributeGroups as $attributeName => $values)
                             <div class="details-filter-row details-row-size">
-                                <label for="{{ strtolower($attributeName) }}">{{ ucfirst($attributeName) }}:</label>
-                                <div class="select-custom" style="margin-left: 15px;">
-                                    <select name="attributes[{{ strtolower($attributeName) }}]" id="{{ strtolower($attributeName) }}" class="form-control">
-                                        <option value="" selected disabled>Select a {{ $attributeName }}</option>
-                                        @foreach($values as $val)
-                                            <option value="{{ strtolower($val) }}">{{ ucfirst($val) }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                                <label for="{{ strtolower($attributeName) }}">{{ ucfirst($attributeName) }} :</label>
+
+                                @if($attributeName == 'Size')
+                                    <div class="select-custom" style="margin-left: 15px;">
+                                        <select name="attributes[{{ strtolower($attributeName) }}]" id="{{ strtolower($attributeName) }}" class="form-control">
+                                            <option value="" selected disabled>Select a {{ $attributeName }}</option>
+                                            @foreach($values as $val)
+                                                <option  value="{{ strtolower($val['value']) }}" data-price="{{ $val['price'] ?? $product->display_price }}">
+                                                    {{ ucfirst($val['value']) }}
+                                                </option>
+                                                {{-- <option value="{{ strtolower($val) }}">{{ ucfirst($val) }}</option> --}}
+                                            @endforeach
+                                        </select>
+                                    </div>
+                               
+                                @elseif($attributeName == 'Color')
+                                    <div class="select-custom" style="margin-left: 15px;">
+                                        <select id="colorSelect" class="form-control">
+                                            <option value="" selected disabled>Select a Color</option>
+                                            @foreach($values as $val)
+                                                <option value="{{ asset('public/assets/images/demos/demo-2/products/' . $val['image']) }}"
+                                                    data-zoom="{{ asset('public/assets/images/demos/demo-2/products/' . $val['image']) }}">
+                                                    {{ ucfirst($val['value']) }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @else
+                                    @foreach($values as $val)
+                                        <span>{{ strtolower($val['value']) }} </span>
+                                    @endforeach
+                                @endif
                             </div>
                         @endforeach
 
@@ -139,7 +160,7 @@
                         </div><!-- End .product-details-footer -->
 
                     </div><!-- End .product-details -->
-                </div><!-- End .col-md-6 -->
+                </div><!-- End .col-md-6 --> 
 
             </div><!-- End .row -->
         </div><!-- End .product-details-top -->
@@ -225,6 +246,82 @@
 
 @endsection
 @section('javascript')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#colorSelect').on('change', function () {
+            let selectedOption = $(this).find('option:selected');
+            let imageUrl = selectedOption.val();
+            // console.log("img",imageUrl);
+            
+            let zoomUrl = selectedOption.data('zoom');
+            // console.log("zoomUrl",zoomUrl);
+
+            // Change main image and zoom image
+            $('#product-zoom').attr('src', imageUrl);
+            $('#product-zoom').attr('data-zoom-image', zoomUrl);
+
+            // // If using elevateZoom or any zoom plugin
+            // if ($.fn.elevateZoom) {
+            //     $('.zoomContainer').remove(); // remove old zoom
+            //     $('#product-zoom').elevateZoom(); // reinit
+            // }
+        });
+    });
+</script>
+
+<!-- Add jQuery CDN before any custom script -->
+{{--
+<script>
+    $(document).ready(function () {
+        // Initialize zoom on page load
+        $('#product-zoom').elevateZoom({
+            zoomType: "lens",
+            lensShape: "round",
+            lensSize: 200,
+            responsive: true
+        });
+
+        $('#colorSelect').on('change', function () {
+            var newSrc = $(this).val();
+            var newZoom = $(this).find(':selected').data('zoom');
+            var $img = $('#product-zoom');
+
+            // Remove existing zoom
+            $.removeData($img, 'elevateZoom');
+            $('.zoomContainer').remove();
+
+            // Change image source and zoom image
+            $img.attr('src', newSrc);
+            $img.attr('data-zoom-image', newZoom);
+
+            // Reinitialize zoom
+            $img.elevateZoom({
+                zoomType: "lens",
+                lensShape: "round",
+                lensSize: 200,
+                responsive: true
+            });
+        });
+    });
+</script> --}}
+
+<script>
+    document.querySelectorAll('select[name^="attributes["]').forEach(select => {
+        select.addEventListener('change', function () {
+            const selected = this.options[this.selectedIndex];
+            const price = selected.getAttribute('data-price');
+            
+            if (price) {
+                const country = "{{ strtolower($country) }}";
+                const currencySymbol = country === 'india' ? '₹' : '$';
+                const formatted = country === 'india' ? price : parseFloat(price).toFixed(2);
+                document.getElementById('price-display').innerHTML = `SALE PRICE : ${currencySymbol}${formatted}`;
+            }
+        });
+    });
+</script>
+{{-- 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
     document.getElementById('razorpay-button').onclick = function (e) {
@@ -254,5 +351,5 @@
         var rzp = new Razorpay(options);
         rzp.open();
     };
-</script>
+</script> --}}
 @endsection

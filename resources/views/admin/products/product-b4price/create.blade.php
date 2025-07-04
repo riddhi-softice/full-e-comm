@@ -1,5 +1,4 @@
 @extends('admin.layouts.app')
-
 @section('content')
 <div class="pagetitle">
     <h1>Products</h1>
@@ -15,8 +14,8 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Edit Products</h5>
-                
+                    <h5 class="card-title">Add Product</h5>
+
                     <ul class="nav nav-tabs mb-3" id="customTabs">
                         <li class="nav-item">
                             <a class="nav-link custom-tab active" data-target="#basic">Basic Info</a>
@@ -32,52 +31,51 @@
                         </li>
                     </ul>
 
-                    <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data" id="productForm">
+                    <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data" id="productForm">
                         @csrf
-                        @method('PUT')
 
                         @if ($errors->any())
-                            <div class="alert alert-danger">
-                                <ul class="mb-0">
-                                    @foreach ($errors->unique() as $error)
-                                    <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->unique() as $error)
+                                <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
                         @endif
-                        
+
                         <div class="tab-content">
                             {{-- Basic Info --}}
                             <div class="tab-pane custom-tab-pane active" id="basic" >
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Product Name</label>
-                                    <input type="text" name="name" class="form-control" value="{{ old('name', $product->name) }}">
+                                    <input type="text" name="name" class="form-control" value="{{ old('name') }}">
                                 </div>
                     
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Short Description</label>
-                                    <textarea name="description" class="form-control" rows="3">{{ $product->description }}</textarea>
+                                    <textarea name="description" class="form-control" rows="3"></textarea>
                                 </div>
                     
                                 <div class="row">
                                     <div class="col-lg-6 mb-3">
                                         <label class="form-label fw-bold">Sale Price ($)</label>
-                                        <input type="number" step="0.01" value="{{ old('price', $product->price) }}" name="price" class="form-control">
+                                        <input type="number" step="0.01" name="price" class="form-control" value="{{ old('price') }}">
                                     </div>
                                     <div class="col-lg-6 mb-3">
                                         <label class="form-label fw-bold">Regular Price ($)</label>
-                                        <input type="number" step="0.01" name="reseller_price" class="form-control"  value="{{ old('reseller_price', $product->reseller_price) }}" >
+                                        <input type="number" step="0.01" name="reseller_price" class="form-control" value="{{ old('reseller_price') }}" >
                                     </div>
                                 </div>
                     
                                 <div class="row">
                                     <div class="col-lg-6 mb-3">
                                         <label class="form-label fw-bold">Long Description</label>
-                                        <textarea class="tinymce-editor form-control" name="long_desc"> {!! $product->long_desc !!} </textarea>
+                                        <textarea class="tinymce-editor form-control" name="long_desc"></textarea>
                                     </div>
                                     <div class="col-lg-6 mb-3">
                                         <label class="form-label fw-bold">Shipping Information</label>
-                                        <textarea class="tinymce-editor form-control" name="shipping_info"> {!! $product->shipping_info !!} </textarea>
+                                        <textarea class="tinymce-editor form-control" name="shipping_info"></textarea>
                                     </div>
                                 </div>
 
@@ -94,7 +92,7 @@
                                         <select class="form-control" id="cat_id" name="cat_id">
                                             <option value="" disabled selected>-- Select Category --</option>
                                             @foreach ($category as $value)
-                                                <option value="{{ $value->id }}" {{ $value->id == $product->cat_id ? 'selected' : ''}}>{{ $value->name }}</option>
+                                                <option value="{{ $value->id }}">{{ $value->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -102,23 +100,19 @@
                                         <label class="form-label fw-bold">Select Subcategory</label>
                                         <select class="form-control" id="sub_cat_id" name="sub_cat_id">
                                             <option value="" disabled selected>-- Select Subcategory --</option>
-                                            @foreach ($subcategories as $value1)
-                                                <option value="{{ $value1->id }}" {{ $value1->id == $product->sub_cat_id ? 'selected' : ''}}>{{ $value1->name }}</option>
-                                            @endforeach
+                                            {{-- Dynamically populate based on selected category --}}
                                         </select>
                                     </div>
-
                                     <div class="col-lg-6 mb-3">
                                         <label class="form-label fw-bold">Select Brand</label>
                                         <select class="form-control" id="brand_id" name="brand_id">
                                             <option value="" disabled selected>-- Select Brand --</option>
                                             @foreach ($brand as $val)
-                                                <option value="{{ $val->id }}" {{ $val->id == $product->brand_id ? 'selected' : '' }} >{{ $val->name }}</option>
+                                                <option value="{{ $val->id }}">{{ $val->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
-                                
                                 <div class="text-end mt-3">
                                     <button type="button" class="btn btn-secondary next-tab-btn">Next</button>
                                 </div>
@@ -126,28 +120,11 @@
                     
                             {{-- Images --}}
                             <div class="tab-pane custom-tab-pane" id="details" style="display: none;">
-                                
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Upload Product Images</label>
                                     <input type="file" name="images[]" id="imageInput" class="form-control" multiple>
                                 </div>
-                                <div class="mb-3">
-                                    <div class="mt-2 d-flex flex-wrap gap-2" id="imagePreviewContainer">
-                                        @foreach($product->images as $image)
-                                        <div style="position: relative;" class="image-wrapper image-item"
-                                            data-id="{{ $image->id }}">
-                                            <img src="{{ asset('public/assets/images/demos/demo-2/products/' . $image->path) }}"
-                                                style="max-width: 100px; height: auto;" class="img-thumbnail">
-        
-                                            <button type="button" class="btn btn-danger btn-sm delete-image"
-                                                style="position: absolute; top: -5px; right: -2px; border-radius: 50%; padding: 2px 6px; font-size: 10px;"
-                                                data-id="{{ $image->id }}" onclick="deleteImage({{ $image->id }})">
-                                                &times;
-                                            </button>
-                                        </div>
-                                        @endforeach
-                                    </div>
-                                </div>
+                                <div class="mb-3 d-flex flex-wrap gap-2" id="imagePreviewContainer"></div>
                                 
                                 <div class="text-end mt-3">
                                     <button type="button" class="btn btn-secondary next-tab-btn">Next</button>
@@ -162,98 +139,8 @@
                                         <button type="button" class="btn btn-success" onclick="addAttributeField()">Add Attribute</button>
                                     </div>
                                 </div>
-
+                    
                                 <div id="additionalFields">
-                                    @foreach ($attributeValues as $attrId => $items)
-                                        <div class="row mb-3 attribute-row">
-                                            
-                                            <div class="col-sm-4">
-                                                <select class="form-control attribute-select" onchange="handleAttributeChange(this)" required>
-                                                    <option value="" disabled>-- Select Attribute --</option>
-                                                    @foreach ($attribute as $value)
-                                                        <option value="{{ $value->id }}" data-name="{{ strtolower($value->name) }}"
-                                                            {{ $attrId == $value->id ? 'selected' : '' }}>
-                                                            {{ $value->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                
-                                        
-                                            <div class="col-sm-6 value-container">
-                                                @foreach ($items as $index => $entry)
-
-                                                    <div class="input-group mb-1">
-                                                        <input type="text" class="form-control" name="attributes[{{ $attrId }}][{{ $index }}][value]"
-                                                               value="{{ $entry['value'] }}" placeholder="Value" required>
-                                
-                                                        @if (!is_null($entry['price']))
-                                                            <input type="number" class="form-control" name="attributes[{{ $attrId }}][{{ $index }}][price]"
-                                                                   value="{{ $entry['price'] }}" placeholder="Price">
-                                                        @endif
-                                
-                                                        @if (!is_null($entry['image']))
-                                                            <input type="file" class="form-control" name="attributes[{{ $attrId }}][{{ $index }}][image]">
-                                                            <img src="{{ asset('public/assets/images/demos/demo-2/products/' . $entry['image']) }}"
-                                                                 width="40" height="40" style="margin-left: 10px;">
-                                                        @endif
-                                
-                                                        @if ($loop->first)
-                                                            <button class="btn btn-secondary" type="button"
-                                                                    onclick="addMoreValues(this, {{ $attrId }}, '{{ strtolower($attribute->firstWhere('id', $attrId)->name) }}')">+</button>
-                                                        @else
-                                                            <button class="btn btn-danger" type="button" onclick="removeValueField(this)">×</button>
-                                                        @endif
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                
-                                            <div class="col-sm-2">
-                                                <button type="button" class="btn btn-danger" onclick="removeTextField(this)">Remove</button>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                                
-                                
-                                {{-- @forelse ($attributeValues as $attrId => $items)
-                                        <div class="row mb-3 attribute-row">
-                                            <div class="col-sm-4">
-                                                <select class="form-control attribute-select" onchange="handleAttributeChange(this)">
-                                                    <option disabled>-- Select Attribute --</option>
-                                                    @foreach ($attribute as $value)
-                                                        <option value="{{ $value->id }}" data-name="{{ strtolower($value->name) }}"
-                                                            {{ $attrId == $value->id ? 'selected' : '' }}>
-                                                            {{ $value->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="col-sm-6 value-container">
-                                                @foreach ($items as $index => $entry)
-                                                    <div class="input-group mb-1">
-                                                        <input type="text" class="form-control" name="attributes[{{ $attrId }}][{{ $index }}][value]"
-                                                               value="{{ $entry['value'] }}" placeholder="Value" required>
-                                                        <input type="number" class="form-control" name="attributes[{{ $attrId }}][{{ $index }}][price]"
-                                                               value="{{ $entry['price'] }}" placeholder="Price" required>
-                                                        @if ($loop->first)
-                                                            <button class="btn btn-secondary" type="button"
-                                                                    onclick="addMoreValues(this, {{ $attrId }})">+</button>
-                                                        @else
-                                                            <button class="btn btn-danger" type="button" onclick="removeValueField(this)">×</button>
-                                                        @endif
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <button type="button" class="btn btn-danger" onclick="removeTextField(this)">Remove</button>
-                                            </div>
-                                        </div>
-                                    @empty
-                                    @endforelse
-                                </div>  --}}
-                                                    
-                                {{-- <div id="additionalFields">
                                     <div class="row mb-3 attribute-row">
                                         <div class="col-sm-4">
                                             <select class="form-control attribute-select" onchange="handleAttributeChange(this)">
@@ -268,50 +155,48 @@
                                                 <input type="text" class="form-control" name="attributes[][0][value]" placeholder="Value">
                                                 <input type="number" class="form-control" name="attributes[][0][price]" placeholder="Price">
                                             </div>
+                                            {{-- input will be inserted dynamically here --}}
                                         </div>
                                         <div class="col-sm-2">
                                             <button type="button" class="btn btn-danger" onclick="removeTextField(this)">Remove</button>
                                         </div>
                                     </div>
-                                </div> --}}
+                                </div>
                                                                       
                                 <div class="text-end mt-3">
                                     <button type="submit" class="btn btn-primary" id="submitBtn">Create Product</button>
                                 </div>
+                                
                             </div>
                         </div>
+                        
                     </form>
-
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-<!-- Confirm Delete Modal -->
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Deletion</h5>
-                <button type="button" class="close custom-close" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" id="confirmDeleteModalMessage">
-                Are you sure you want to delete this record?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary custom-close">Cancel</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal" id="confirmDelete">Delete</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 @endsection
 @section('javascript')
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{{-- ONLY TAB ACTIVE MANAGE --}}
+{{-- <script>
+    $(document).ready(function() {
+        $('.custom-tab').on('click', function(e) {
+            e.preventDefault();
+            // Remove active class from all tabs and hide all tab panes
+            $('.custom-tab').removeClass('active');
+            $('.custom-tab-pane').hide();
+    
+            // Activate clicked tab and show its target pane
+            $(this).addClass('active');
+            var target = $(this).data('target');
+            $(target).show();
+        });
+    });
+</script> --}}
+
 {{-- NEXT BUTTON WITH TAB ACTIVE MANAGE --}}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -399,7 +284,6 @@
         </div>`;
         document.getElementById('additionalFields').insertAdjacentHTML('beforeend', html);
     }
-
     function handleAttributeChange(selectElement) {
         const selectedId = selectElement.value;
         const attrName = selectElement.options[selectElement.selectedIndex].dataset.name;
@@ -407,16 +291,41 @@
     
         if (!selectedId) return;
 
-        // Add dynamic input fields using the selected ID
-        valueContainer.innerHTML = `
-            <div class="input-group mb-1">
-                <input type="text" class="form-control" name="attributes[${selectedId}][0][value]" placeholder="Value">
-                <input type="number" class="form-control" name="attributes[${selectedId}][0][price]" placeholder="Price">
-                <button class="btn btn-secondary" type="button" onclick="addMoreValues(this, ${selectedId})">+</button>
-            </div>
-        `;
+        if (attrName === 'size' ) {
+            // Add dynamic input fields using the selected ID
+            valueContainer.innerHTML = `
+                <div class="input-group mb-1">
+                    <input type="text" class="form-control" name="attributes[${selectedId}][0][value]" placeholder="Value">
+                    <input type="number" class="form-control" name="attributes[${selectedId}][0][price]" placeholder="Price">
+                    <button class="btn btn-secondary" type="button" onclick="addMoreValues(this, ${selectedId})">+</button>
+                </div>
+            `;
+        
+        } else {
+            valueContainer.innerHTML = `
+                <input type="text" class="form-control" name="attributes[${selectedId}][0][value]" placeholder="Value" required>
+            `;
+        }
+          
+        // if (attrName === 'color' || attrName === 'size') {
+            // priceContainer.innerHTML = `
+            //     <div class="input-group mb-1">
+            //         <input type="number" class="form-control" name="attributes[${selectedId}][]" placeholder="Price" required>
+            //     </div>
+            // `;
+            // valueContainer.innerHTML = `
+            //     <div class="input-group mb-1">
+            //         <input type="text" class="form-control" name="attributes[${selectedId}][]" placeholder="Value" required>
+            //         <button class="btn btn-secondary" type="button" onclick="addMoreValues(this, ${selectedId})">+</button>
+            //     </div>
+            // `;
+        // } else {
+        //     valueContainer.innerHTML = `
+        //         <input type="text" class="form-control" name="attributes[${selectedId}][]" placeholder="Value" required>
+        //     `;
+        // }
     }
-
+    
     function addMoreValues(button, attrId) {
         const container = button.closest('.value-container');
         const index = container.querySelectorAll('.input-group').length;
@@ -431,9 +340,21 @@
         container.appendChild(newInput);
     }
 
+    // function addMoreValues(button, id) {
+    //     const container = button.closest('.value-container') || button.closest('.attribute-row').querySelector('.value-container');
+    //     const newInput = document.createElement('div');
+    //     newInput.className = 'input-group mb-1';
+    //     newInput.innerHTML = `
+    //         <input type="text" class="form-control" name="attributes[${id}][]" placeholder="Value" required>
+    //         <button class="btn btn-danger" type="button" onclick="removeValueField(this)">×</button>
+    //     `;
+    //     container.appendChild(newInput);
+    // }
+
     function removeValueField(button) {
         button.closest('.input-group').remove();
     }
+    
     function removeTextField(button) {
         button.closest('.attribute-row').remove();
     }
@@ -480,65 +401,67 @@
     });
 </script>
 
-<script>
-    let imageIdToDelete = null;
-
-    function deleteImage(imageId) {
-        const imageItems = document.querySelectorAll('#imagePreviewContainer .image-item');
-        // console.log(imageItems.length);
-
-        // Only 1 image left
-        if (imageItems.length <= 1) {
-            // Set modal message
-            document.getElementById('confirmDeleteModalMessage').innerText = 'At least one image must remain.';
-            // Disable delete button
-            document.getElementById('confirmDelete').style.display = 'none';
-        } else {
-            // Normal confirmation
-            document.getElementById('confirmDeleteModalMessage').innerText =
-                'Are you sure you want to delete this image?';
-            document.getElementById('confirmDelete').style.display = 'inline-block';
-            imageIdToDelete = imageId;
-        }
-        // Show the modal
-        const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
-        modal.show();
+{{-- <script>
+    function addAttributeField() {
+        const html = `
+        <div class="row mb-3 attribute-row">
+            <div class="col-sm-4">
+                <select class="form-control attribute-select" name="attribute_ids[]" onchange="handleAttributeChange(this)" required>
+                    <option value="" disabled selected>-- Select Attribute --</option>
+                    @foreach ($attribute as $value)
+                        <option value="{{ $value->id }}" data-name="{{ strtolower($value->name) }}">{{ $value->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-sm-6 value-container">
+                <input type="text" class="form-control" name="attributes[][value]" placeholder="Attribute Value" required>
+            </div>
+            <div class="col-sm-2">
+                <button type="button" class="btn btn-danger" onclick="removeTextField(this)">Remove</button>
+            </div>
+        </div>`;
+        document.getElementById('additionalFields').insertAdjacentHTML('beforeend', html);
     }
-    // Handle confirm delete button
-    document.getElementById('confirmDelete').addEventListener('click', function() {
-        if (!imageIdToDelete) return;
+    
+    function removeTextField(btn) {
+        btn.closest('.attribute-row').remove();
+    }
+    
+    function handleAttributeChange(selectElement) {
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+        const attrName = selectedOption.getAttribute('data-name');
+        const container = selectElement.closest('.attribute-row').querySelector('.value-container');
+    
+        // Only for color or size attributes allow multiple values
+        // if (attrName === 'color' || attrName === 'size') {
+            container.innerHTML = `
+                <div class="value-group">
+                    <div class="input-group mb-1">
+                        <input type="text" class="form-control" name="attributes[][value][]" placeholder="Value 1" required>
+                        <button class="btn btn-secondary" type="button" onclick="addMoreValues(this)">+</button>
+                    </div>
+                </div>
+            `;
+        // } else {
+        //     container.innerHTML = `
+        //         <input type="text" class="form-control" name="attributes[][value]" placeholder="Attribute Value" required>
+        //     `;
+        // }
+    }
+    function addMoreValues(button) {
+        const valueGroup = button.closest('.value-group');
 
-        const url = "{{ route('products.image.delete', ':id') }}".replace(':id', imageIdToDelete);
-
-        fetch(url, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Remove image from DOM
-                document.querySelector(`[data-id="${imageIdToDelete}"]`).remove();
-                imageIdToDelete = null;
-            });
-
-        // Hide modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal'));
-        modal.hide();
-    });
-
-    // Close modal handlers
-    document.querySelectorAll('.custom-close').forEach(btn => {
-        btn.addEventListener('click', () => {
-            imageIdToDelete = null;
-
-            const modalEl = document.getElementById('confirmDeleteModal');
-            const modalInstance = bootstrap.Modal.getInstance(modalEl);
-            modalInstance.hide();
-        });
-    });
-</script>
+        const inputGroup = document.createElement('div');
+        inputGroup.className = 'input-group mb-1';
+        inputGroup.innerHTML = `
+            <input type="text" class="form-control" name="attributes[][value][]" placeholder="Another Value" required>
+            <button class="btn btn-danger" type="button" onclick="removeValueField(this)">×</button>
+        `;
+        valueGroup.appendChild(inputGroup);
+    }
+    function removeValueField(button) {
+        button.closest('.input-group').remove();
+    }
+</script>   --}}
 
 @endsection

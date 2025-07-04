@@ -198,7 +198,6 @@
 
         // document.querySelector('form').submit();
         // return;
-
         var options = {
             // key: "rzp_test_P6mt7XmeAvOAdx", // Replace with your Razorpay key 
             key: "{{ env('RAZORPAY_KEY') }}", // Replace with your Razorpay key 

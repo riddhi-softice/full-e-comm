@@ -174,6 +174,16 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         });        
+       
+        Schema::create('favourites', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('product_id');
+            $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+        });        
     }
 
     public function down(): void
@@ -194,7 +204,7 @@ return new class extends Migration
         Schema::dropIfExists('related_products');
         Schema::dropIfExists('reviews');
         Schema::dropIfExists('cart_items');
+        Schema::dropIfExists('favourites');
     }
    
-
 };

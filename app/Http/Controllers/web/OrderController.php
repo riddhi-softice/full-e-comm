@@ -123,6 +123,9 @@ class OrderController extends Controller
             $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
             $payment = $api->payment->fetch($request->razorpay_payment_id);
             if(!empty($request->razorpay_payment_id)) {
+               
+                // remove cart item 
+                CartItem::where('user_id',$uid)->delete();
                 try {
                     $response = $api->payment->fetch($request->razorpay_payment_id)->capture(array('amount'=>$payment['amount']));
                     $order->update(['razorpay_payment_id' => $request->razorpay_payment_id ?? null]);
@@ -189,6 +192,8 @@ class OrderController extends Controller
                     // Session::put('error',$e->getMessage());
                     return redirect()->back();
                 }
+            }else{
+                return redirect()->back();
             }
         }
     }
@@ -196,31 +201,32 @@ class OrderController extends Controller
     public function orderHistory(Request $request)
     {
         $uid = auth()->id();
-        $orders = Orders::with(['product','product.firstImage'])->where('user_id',$uid)->latest()->get();
-       
+        $orders = OrderItem::with(['product','product.firstImage','order'])->where('user_id',$uid)->latest()->get();
+              
         $token = $this->getShiprocketToken();
-        foreach ($orders as $order) {
+        foreach ($orders as $value) {
 
+            $order = $value->order;
             $order->shipment_id = "123";
             if ($order->shipment_id) {
 
                 $response = Http::withToken($token)->get("https://apiv2.shiprocket.in/v1/external/courier/track/shipment/{$order->shipment_id}");
                 if ($response->successful()) {
-                    
+
                     $trackingData = $response->json();
-                    $order->tracking = $trackingData[$order->shipment_id]['tracking_data'] ?? null;
+                    $value->tracking = $trackingData[$order->shipment_id]['tracking_data'] ?? null;
                 } else {
-                    $order->tracking = null;
+                    $value->tracking = null;
                 }
             } else {
-                $order->tracking = null;
+                $value->tracking = null;
             }
         }
         $data['order_history'] = $orders;
         
         return view('web.order.order_history', compact('data'));
     }
-    
+   
     public function addOrderSingle(Request $request, $productId)
     {
         $uid = auth()->id();
@@ -415,7 +421,35 @@ class OrderController extends Controller
             }
         }
     }
+    
+    public function orderHistory_single(Request $request)
+    {
+        $uid = auth()->id();
+        $orders = Orders::with(['product','product.firstImage'])->where('user_id',$uid)->latest()->get();
+       
+        $token = $this->getShiprocketToken();
+        foreach ($orders as $order) {
 
+            $order->shipment_id = "123";
+            if ($order->shipment_id) {
+
+                $response = Http::withToken($token)->get("https://apiv2.shiprocket.in/v1/external/courier/track/shipment/{$order->shipment_id}");
+                if ($response->successful()) {
+                    
+                    $trackingData = $response->json();
+                    $order->tracking = $trackingData[$order->shipment_id]['tracking_data'] ?? null;
+                } else {
+                    $order->tracking = null;
+                }
+            } else {
+                $order->tracking = null;
+            }
+        }
+        $data['order_history'] = $orders;
+        
+        return view('web.order.order_history', compact('data'));
+    }
+    
     public function track()     // verify token valid or not
     {
         $token = $this->getShiprocketToken();

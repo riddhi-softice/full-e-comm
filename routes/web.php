@@ -65,6 +65,7 @@ Route::get('privacypolicy', function () {
 
             Route::get('addCart/{id}','addToCart')->name('cart.add');
             Route::get('product/cart','showCart')->name('cart.index');
+            // Route::get('product/cart','view')->name('cart.index');
             Route::delete('/cart/{id}','removeItem')->name('cart.remove');
             Route::post('cart/update', 'updateCart')->name('cart.update');
         });
@@ -126,6 +127,7 @@ Route::prefix('admin')->group(function () {
         Route::get('get-subcategories/{cat_id}', [admin_product::class, 'getSubcategories'])->name('product.sub-cate');
 
         Route::resource('users', UserController::class);
+        // Route::get('get_cart_list', [UserController::class, 'get_cart_list'])->name('get_cart_list');
         Route::get('get_order_list', [UserController::class, 'get_order_list'])->name('get_order_list');
         Route::post('change_order_status', [UserController::class, 'change_order_status'])->name('change_order_status');
         // Route::post('/admin/order/update-status', [OrderController::class, 'updateStatus']);

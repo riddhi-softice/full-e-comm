@@ -41,7 +41,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
-        
+        // dd("stop");
         $validated = $request->validate([
             'name'             => 'required|string|max:255',
             'description'      => 'required|string',
@@ -79,6 +79,7 @@ class ProductController extends Controller
             'attributes.*.*.value.required' => 'Attribute value is required.',
             // 'attributes.*.*.price.required' => 'Attribute price is required.',
         ]);
+        // dd($validated['name']);
         
         $product = Product::create([
             'name' => $validated['name'],
@@ -109,48 +110,11 @@ class ProductController extends Controller
         $attributes = $request->input('attributes');
         foreach ($attributes as $attributeId => $items) {
             foreach ($items as $item) {
-
-                $imageName = '';
-                if (isset($item['image']) && $item['image'] instanceof \Illuminate\Http\UploadedFile) {
-                    $image = $item['image'];
-                    $originalSizeBytes = $image->getSize();
-                    $originalSizeKB = $originalSizeBytes / 1024;
-            
-                    // Dynamic quality based on size (optional)
-                    $quality = 40; // Default quality for WebP
-            
-                    $imagePath = public_path('assets/images/demos/demo-2/products');
-                    $filenameBase = time() . '_' . rand(1000, 9999);
-                    $outputExtension = 'webp';
-                    $imageName = $filenameBase . '.' . $outputExtension;
-                    $outputFullPath = $imagePath . '/' . $imageName;
-            
-                    // Make directory if it doesn't exist
-                    if (!file_exists($imagePath)) {
-                        mkdir($imagePath, 0755, true);
-                    }
-            
-                    try {
-                        // Process and save the image as WebP
-                        Image::make($image->getRealPath())
-                            ->resize(1500, null, function ($constraint) {
-                                $constraint->aspectRatio();
-                                $constraint->upsize();
-                            })
-                            ->encode('webp', $quality)
-                            ->save($outputFullPath);
-                    } catch (\Exception $e) {
-                        // \Log::error('Image conversion failed: ' . $e->getMessage());
-                        $imageName = null;
-                    }
-                }
-                
                 AttributeValue::create([
                     'product_id'    => $product->id,
                     'attribute_id'  => $attributeId,
                     'value'         => $item['value'],
                     'price'         => $item['price'] ?? null,
-                    'image'         => $imageName ?? null,
                 ]);
             }
         }
@@ -202,22 +166,17 @@ class ProductController extends Controller
         $subcategories = SubCategory::where('cat_id', $product->cat_id)->latest()->get();
         $brand = Brand::latest()->get();
         $attribute = Attribute::latest()->get();
-
         $attributeValues = AttributeValue::where('product_id', $product->id)
-                        ->get()
-                        ->groupBy('attribute_id')
+                        ->get()->groupBy('attribute_id')
                         ->map(function ($group) {
                             return $group->map(function ($item) {
                                 return [
                                     'value' => $item->value,
                                     'price' => $item->price,
-                                    'image' => $item->image,
                                 ];
                             })->toArray();
                         });
-
-        // dd($attributeValues);
-
+        
         return view('admin.products.edit', compact('product','category','brand','attribute','subcategories','attributeValues'));
     }
     

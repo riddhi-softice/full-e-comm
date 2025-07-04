@@ -151,10 +151,11 @@
                                             </select>
                                         </div>
                                         <div class="col-sm-6 value-container">
-                                            <div class="input-group mb-1">
+                                            <input type="text" class="form-control" name="attributes[][0][value]" placeholder="Value" required>
+                                            {{-- <div class="input-group mb-1">
                                                 <input type="text" class="form-control" name="attributes[][0][value]" placeholder="Value">
                                                 <input type="number" class="form-control" name="attributes[][0][price]" placeholder="Price">
-                                            </div>
+                                            </div> --}}
                                             {{-- input will be inserted dynamically here --}}
                                         </div>
                                         <div class="col-sm-2">
@@ -273,10 +274,8 @@
                 </select>
             </div>
             <div class="col-sm-6 value-container">
-                 <div class="input-group mb-1">
-                    <input type="text" class="form-control" name="attributes[][0][value]" placeholder="Value">
-                    <input type="number" class="form-control" name="attributes[][0][price]" placeholder="Price">
-                </div>
+                <input type="text" class="form-control" name="attributes[][0][value]" placeholder="Value" required>
+                
             </div>
             <div class="col-sm-2">
                 <button type="button" class="btn btn-danger" onclick="removeTextField(this)">Remove</button>
@@ -284,6 +283,7 @@
         </div>`;
         document.getElementById('additionalFields').insertAdjacentHTML('beforeend', html);
     }
+
     function handleAttributeChange(selectElement) {
         const selectedId = selectElement.value;
         const attrName = selectElement.options[selectElement.selectedIndex].dataset.name;
@@ -291,63 +291,77 @@
     
         if (!selectedId) return;
 
-        // Add dynamic input fields using the selected ID
-        valueContainer.innerHTML = `
-            <div class="input-group mb-1">
-                <input type="text" class="form-control" name="attributes[${selectedId}][0][value]" placeholder="Value">
-                <input type="number" class="form-control" name="attributes[${selectedId}][0][price]" placeholder="Price">
-                <button class="btn btn-secondary" type="button" onclick="addMoreValues(this, ${selectedId})">+</button>
-            </div>
-        `;
-          
-        // if (attrName === 'color' || attrName === 'size') {
-            // priceContainer.innerHTML = `
-            //     <div class="input-group mb-1">
-            //         <input type="number" class="form-control" name="attributes[${selectedId}][]" placeholder="Price" required>
-            //     </div>
-            // `;
-            // valueContainer.innerHTML = `
-            //     <div class="input-group mb-1">
-            //         <input type="text" class="form-control" name="attributes[${selectedId}][]" placeholder="Value" required>
-            //         <button class="btn btn-secondary" type="button" onclick="addMoreValues(this, ${selectedId})">+</button>
-            //     </div>
-            // `;
-        // } else {
-        //     valueContainer.innerHTML = `
-        //         <input type="text" class="form-control" name="attributes[${selectedId}][]" placeholder="Value" required>
-        //     `;
-        // }
+        if (attrName === 'size' ) {
+            // Add dynamic input fields using the selected ID
+            valueContainer.innerHTML = `
+                <div class="input-group mb-1">
+                    <input type="text" class="form-control" name="attributes[${selectedId}][0][value]" placeholder="Value">
+                    <input type="number" class="form-control" name="attributes[${selectedId}][0][price]" placeholder="Price">
+                    <button class="btn btn-secondary" type="button" onclick="addMoreValues(this, ${selectedId}, '${attrName}')">+</button>
+                </div>
+            `;
+        } else if (attrName === 'color'){
+            valueContainer.innerHTML = `
+                <div class="input-group mb-2">
+                    <input type="text" class="form-control" name="attributes[${selectedId}][0][value]" placeholder="Value" required>
+                    <input type="file" class="form-control" name="attributes[${selectedId}][0][image]"  required>
+                    <button class="btn btn-secondary" type="button" onclick="addMoreValues(this, ${selectedId}, '${attrName}')">+</button>
+                </div>
+            `;
+        } else {
+            valueContainer.innerHTML = `
+                <input type="text" class="form-control" name="attributes[${selectedId}][0][value]" placeholder="Value" required>
+            `;
+        }
     }
-    
-    function addMoreValues(button, attrId) {
+
+    function addMoreValues(button, attrId, attrName) {
         const container = button.closest('.value-container');
         const index = container.querySelectorAll('.input-group').length;
 
         const newInput = document.createElement('div');
         newInput.className = 'input-group mb-1';
-        newInput.innerHTML = `
-            <input type="text" class="form-control" name="attributes[${attrId}][${index}][value]" placeholder="Value">
-            <input type="number" class="form-control" name="attributes[${attrId}][${index}][price]" placeholder="Price">
-            <button class="btn btn-danger" type="button" onclick="removeValueField(this)">×</button>
-        `;
+
+        let innerHTML = '';
+
+        if (attrName === 'size') {
+            innerHTML = `
+                <input type="text" class="form-control" name="attributes[${attrId}][${index}][value]" placeholder="Value" required>
+                <input type="number" class="form-control" name="attributes[${attrId}][${index}][price]" placeholder="Price" required>
+                <button class="btn btn-danger" type="button" onclick="removeValueField(this)">×</button>
+            `;
+        } else if (attrName === 'color') {
+            innerHTML = `
+                <input type="text" class="form-control" name="attributes[${attrId}][${index}][value]" placeholder="Color Name" required>
+                <input type="file" class="form-control" name="attributes[${attrId}][${index}][image]" required>
+                <button class="btn btn-danger" type="button" onclick="removeValueField(this)">×</button>
+            `;
+        } else {
+            innerHTML = `
+                <input type="text" class="form-control" name="attributes[${attrId}][${index}][value]" placeholder="Value" required>
+                <button class="btn btn-danger" type="button" onclick="removeValueField(this)">×</button>
+            `;
+        }
+
+        newInput.innerHTML = innerHTML;
         container.appendChild(newInput);
     }
+    
+    // function addMoreValues(button, attrId) {
+    //     const container = button.closest('.value-container');
+    //     const index = container.querySelectorAll('.input-group').length;
 
-    // function addMoreValues(button, id) {
-    //     const container = button.closest('.value-container') || button.closest('.attribute-row').querySelector('.value-container');
     //     const newInput = document.createElement('div');
     //     newInput.className = 'input-group mb-1';
     //     newInput.innerHTML = `
-    //         <input type="text" class="form-control" name="attributes[${id}][]" placeholder="Value" required>
+    //         <input type="text" class="form-control" name="attributes[${attrId}][${index}][value]" placeholder="Value">
+    //         <input type="number" class="form-control" name="attributes[${attrId}][${index}][price]" placeholder="Price">
     //         <button class="btn btn-danger" type="button" onclick="removeValueField(this)">×</button>
     //     `;
     //     container.appendChild(newInput);
     // }
 
-    function removeValueField(button) {
-        button.closest('.input-group').remove();
-    }
-    
+   
     function removeTextField(button) {
         button.closest('.attribute-row').remove();
     }

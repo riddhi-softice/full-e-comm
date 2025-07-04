@@ -7,10 +7,11 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Address;
 use App\Models\Orders;
+use App\Models\OrderItem;
+use App\Models\CartItem;
 use DataTables;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
-
 
 class UserController extends Controller
 {
@@ -51,7 +52,82 @@ class UserController extends Controller
         return response()->json(['message' => 'Item deleted successfully'], 200);
     }
 
+    public function get_cart_list(Request $request)
+    {
+        if ($request->ajax()) {
+
+            $data = CartItem::with(['product','user'])->latest()->get();
+            return DataTables::of($data)
+            
+                ->addIndexColumn()
+                ->addColumn('product_name', function($row){
+                    $name = $row->product->name ?? '';
+                    return trim($name);
+                })
+
+                ->addColumn('user_name', function($row){
+                    $name = $row->user->name ?? '';
+                    return trim($name);
+                })
+                
+                ->addColumn('created_at', function($row){
+                    return Carbon::parse($row->created_at)->format('Y-m-d H:i:s');
+                })   
+                           
+                ->rawColumns(['product_name','user_name'])
+                
+                ->make(true);
+        }
+        return view('admin.users.cart_index');
+    }
+   
     public function get_order_list(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = Orders::with(['product','user'])->withCount('orderItems')->latest()->get();
+            // $data = OrderItem::with(['product','user','order'])->get();
+            return DataTables::of($data)
+                ->addIndexColumn()
+
+                ->addColumn('product_name', function($row){
+                    $name = $row->product->name ?? '';
+                    return trim($name);
+                })
+
+                ->addColumn('user_name', function($row){
+                    $name = $row->user->name ?? '';
+                    return trim($name);
+                })
+                
+                // ->addColumn('order_note', function($row){
+                //     $order_note = $row->order->order_note ?? '-';
+                //     return trim($order_note);
+                // })
+                
+                ->addColumn('status', function($row){
+                    $currentStatus = $row->status ?? '';
+                    // $currentStatus = $row->order->status ?? '';
+                    $statusOptions = ['pending','processing','shipped','cancelled','partially_shipped','delivered','partially_delivered','payment_captured'];
+
+                    $html = '<select class="form-control order-status-dropdown" data-id="' . $row->id . '">';
+                    foreach ($statusOptions as $status) {
+                        $selected = $currentStatus === $status ? 'selected' : '';
+                        $html .= "<option value=\"$status\" $selected>$status</option>";
+                    }
+                    $html .= '</select>';
+                    return $html;
+                })
+
+                ->addColumn('created_at', function($row){
+                    return Carbon::parse($row->created_at)->format('Y-m-d H:i:s');
+                })              
+                ->rawColumns(['product_name','user_name','status'])
+                ->make(true);
+        }
+        return view('admin.users.order_index');
+    }
+
+    public function get_order_list_single(Request $request)
     {
         if ($request->ajax()) {
             $data = Orders::with(['product','user'])->get();
@@ -94,9 +170,8 @@ class UserController extends Controller
     public function change_order_status(Request $request)     //  change order status
     {
         $order = Orders::findOrFail($request->id);
-        $order->status = $request->status;
-        $order->save();
-        return response()->json(['message' => 'Order status updated.']);
+        $order->update(['status' => $request->status]);
+        return response()->json(['message' => 'Order status updated.'],200);
         
         // $token = $this->getShiprocketToken(); // Helper function to get token
         // $order = Orders::findOrFail($request->id);

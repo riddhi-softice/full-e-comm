@@ -21,8 +21,9 @@
         <table class="table table-wishlist table-mobile">
             <thead>
                 <tr>
-                    <th>Product</th>
+                    <th>Product</th> 
                     <th>Price</th>
+                    <th>Quantity</th>
                     <th>Status</th>
                     <th>Courier Name</th>
                     <th>Tracking</th>
@@ -44,9 +45,10 @@
                         </div>
                     </td>
                     <td class="price-col">{{ number_format($item->product->price, 2) }}</td>
-                    <td class="stock-col"><span class="in-stock">{{ $item->status }}</span></td>
-                    <td class="stock-col"><span class="in-stock">{{ $item['tracking']['shipment_track'][0]['courier_name'] }}</span></td>
-                    <td class="stock-col"><span class="in-stock">{{ $item['tracking']['track_url'] }}</span></td>
+                    <td class="stock-col">{{ $item->quantity }}</td>
+                    <td class="stock-col">{{ $item->order->status }}</td>
+                    <td class="stock-col">{{ $item['tracking']['shipment_track'][0]['courier_name'] }}</td>
+                    <td class="stock-col">{{ $item['tracking']['track_url'] }}</td>
                 </tr>
                 @empty
                 <tr>
@@ -63,9 +65,9 @@
             <div class="social-icons social-icons-sm mb-2">
                 <label class="social-label">Share on:</label>
                 <a href="#" class="social-icon" title="Facebook" target="_blank"><i class="icon-facebook-f"></i></a>
-                <a href="#" class="social-icon" title="Twitter" target="_blank"><i class="icon-twitter"></i></a>
+                {{-- <a href="#" class="social-icon" title="Twitter" target="_blank"><i class="icon-twitter"></i></a> --}}
                 <a href="#" class="social-icon" title="Instagram" target="_blank"><i class="icon-instagram"></i></a>
-                <a href="#" class="social-icon" title="Youtube" target="_blank"><i class="icon-youtube"></i></a>
+                {{-- <a href="#" class="social-icon" title="Youtube" target="_blank"><i class="icon-youtube"></i></a> --}}
             </div><!-- End .soial-icons -->
         </div><!-- End .wishlist-share -->
     </div><!-- End .container -->

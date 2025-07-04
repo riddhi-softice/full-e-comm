@@ -5,36 +5,27 @@
 
 @section('content')
     <div class="pagetitle">
-        <h1>User Order </h1>
+        <h1>CartItems </h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active">User Order </li>
+                <li class="breadcrumb-item active">CartItems </li>
             </ol>
         </nav>
     </div>
     <section class="section">
-
-        <div class="alert alert-success alert-dismissible fade show" role="alert" id="alertMsg" style="display: none">
-           Status Updated successfully.
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="card-title">User Order List</h5>
+                            <h5 class="card-title">CartItem List</h5>
                         </div>
                         <table class="table data-table" id="table_Data">
                             <thead>
                                 <tr>
                                     <th>User</th>
-                                    <th>OrderItems</th>
-                                    <th>Total Price</th>
-                                    <th>Order Note</th>
-                                    <th>Status</th>
+                                    <th>Product</th>
                                     <th>Date</th>
                                 </tr>
                             </thead>
@@ -48,7 +39,7 @@
     </section>
 @endsection
 
-@yield('javascript')
+@section('javascript')
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -65,42 +56,14 @@
             processing: true,
             serverSide: true,
             ordering: true,
-            ajax: "{{ route('get_order_list') }}",
+            ajax: "{{ route('get_cart_list') }}",
             columns: [
                 {data: 'user_name', name: 'user_name'},
-                {data: 'order_items_count', name: 'order_items_count'},
-                {data: 'total', name: 'total'},
-                {data: 'order_note', name: 'order_note'},
-                {data: 'status', name: 'status'},
+                {data: 'product_name', name: 'product_name'},
                 {data: 'created_at', name: 'created_at',orderable: false, searchable: false}
             ]
         });
     });
 </script>
-
-<script>
-    $(document).on('change', '.order-status-dropdown', function() {
-        let orderId = $(this).data('id');
-        let newStatus = $(this).val();
-
-        $.ajax({
-            url: 'change_order_status',
-            method: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}',
-                id: orderId,
-                status: newStatus
-            },
-            success: function (data) {
-                // success: function(response) {
-                $('#table_Data').DataTable().ajax.reload(null, false); // Reload DataTable without resetting pagination
-                $('#alertMsg').show().delay(3000).fadeOut(); // Show the alert message- Show for 3 seconds and fade out
-                // alert('Status updated successfully!');
-            },
-            error: function() {
-                alert('Failed to update status.');
-            }
-        });
-    });
-</script>
+@endsection
 

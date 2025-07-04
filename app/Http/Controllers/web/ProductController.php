@@ -145,10 +145,19 @@ class ProductController extends Controller
         $product->display_price = $isIndia ? $product->price * $usdRate : $product->price;
         $product->reseller_display_price = $isIndia ? $product->reseller_price * $usdRate : $product->reseller_price;
 
+        // $attributeGroups = [];
+        // foreach ($product->attributeValues as $attVal) {
+        //     $attributeGroups[$attVal->attribute->name][] = $attVal->value;
+        // }
         $attributeGroups = [];
         foreach ($product->attributeValues as $attVal) {
-            $attributeGroups[$attVal->attribute->name][] = $attVal->value;
+            $attributeGroups[$attVal->attribute->name][] = [
+                'value' => $attVal->value,
+                'image' => $attVal->image,
+                'price' => $isIndia ? $attVal->price * $usdRate : $attVal->price,
+            ];
         }
+
         // dd($attributeGroups);
         return view('web.product_detail', compact('product','country','attributeGroups'));
     }

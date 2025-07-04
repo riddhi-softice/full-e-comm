@@ -59,6 +59,13 @@
         </li>
        
         <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('get_cart_list') ? '' : 'collapsed' }}" href="{{ route('get_cart_list') }}">
+                <i class="bi bi-list"></i>
+                <span>CartItems</span>
+            </a>
+        </li>
+        
+        <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('get_order_list') ? '' : 'collapsed' }}" href="{{ route('get_order_list') }}">
                 <i class="bi bi-list"></i>
                 <span>Orders</span>
