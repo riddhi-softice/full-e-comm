@@ -7,6 +7,7 @@ use App\Http\Controllers\web\CartController;
 use App\Http\Controllers\web\RegisterController;
 use App\Http\Controllers\web\AccountController;
 use App\Http\Controllers\web\RazorpayPaymentController;
+use App\Http\Controllers\web\CommonController;
 
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\TwoFactorAuthController;
@@ -61,6 +62,12 @@ Route::get('privacypolicy', function () {
 
     Route::middleware(['auth'])->group(function () {
 
+        Route::controller(CommonController::class)->group(function () {
+
+            Route::get('addToFavourite/{id}','addToFavourite')->name('cart.add');
+
+        });
+        
         Route::controller(CartController::class)->group(function () {
 
             Route::get('addCart/{id}','addToCart')->name('cart.add');
@@ -127,7 +134,7 @@ Route::prefix('admin')->group(function () {
         Route::get('get-subcategories/{cat_id}', [admin_product::class, 'getSubcategories'])->name('product.sub-cate');
 
         Route::resource('users', UserController::class);
-        // Route::get('get_cart_list', [UserController::class, 'get_cart_list'])->name('get_cart_list');
+        Route::get('get_cart_list', [UserController::class, 'get_cart_list'])->name('get_cart_list');
         Route::get('get_order_list', [UserController::class, 'get_order_list'])->name('get_order_list');
         Route::post('change_order_status', [UserController::class, 'change_order_status'])->name('change_order_status');
         // Route::post('/admin/order/update-status', [OrderController::class, 'updateStatus']);
